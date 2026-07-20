@@ -1,0 +1,377 @@
+#include <WiFi.h>
+#include <WebSocketClient.h>
+#include <ArduinoJson.h>
+
+// ==================== CONFIGURATION ====================
+// WiFi Credentials
+const char* ssid = "YOUR_WIFI_SSID";
+const char* password = "YOUR_WIFI_PASSWORD";
+
+// Server Configuration
+const char* server = "192.168.1.100"; // Your Node.js server IP
+const int port = 3000;
+
+// Kandy Traffic Light Configuration
+const char* CITY_NAME = "kandy";
+const char* LOCATION_ID = "kandy";
+
+// Relay Pins (ESP32)
+const int RED_PIN = 5;      // D5
+const int YELLOW_PIN = 4;   // D4
+const int GREEN_PIN = 0;    // D0
+
+// Buzzer for emergency alerts (optional)
+const int BUZZER_PIN = 2;
+
+// ==================== GLOBAL VARIABLES ====================
+WebSocketClient webSocketClient;
+unsigned long lastHeartbeat = 0;
+unsigned long lastReconnectAttempt = 0;
+bool wsConnected = false;
+String currentStatus = "unknown";
+String lastCommand = "";
+
+// Fail-safe timer (if no command received for 30 seconds, activate fail-safe)
+const unsigned long FAIL_SAFE_TIMEOUT = 30000;
+unsigned long lastCommandTime = 0;
+
+// ==================== SETUP ====================
+void setup() {
+  Serial.begin(115200);
+  Serial.println("\n========================================");
+  Serial.println("KANDY TRAFFIC LIGHT CONTROLLER");
+  Serial.println("========================================");
+  
+  // Initialize pins
+  pinMode(RED_PIN, OUTPUT);
+  pinMode(YELLOW_PIN, OUTPUT);
+  pinMode(GREEN_PIN, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+  
+  // Start with all lights off
+  setAllLightsOff();
+  
+  // Connect to WiFi
+  connectToWiFi();
+  
+  // Connect to WebSocket
+  connectWebSocket();
+  
+  Serial.println("System initialized successfully!");
+  Serial.println("========================================");
+}
+
+// ==================== MAIN LOOP ====================
+void loop() {
+  // Monitor WebSocket connection
+  if (wsConnected) {
+    webSocketClient.monitor();
+    sendHeartbeat();
+  } else {
+    attemptReconnect();
+  }
+  
+  // Check fail-safe
+  checkFailSafe();
+  
+  delay(10);
+}
+
+// ==================== WIFI CONNECTION ====================
+void connectToWiFi() {
+  Serial.print("Connecting to WiFi");
+  WiFi.begin(ssid, password);
+  
+  int attempts = 0;
+  while (WiFi.status() != WL_CONNECTED && attempts < 30) {
+    delay(500);
+    Serial.print(".");
+    attempts++;
+  }
+  
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\n✅ WiFi Connected!");
+    Serial.print("IP Address: ");
+    Serial.println(WiFi.localIP());
+  } else {
+    Serial.println("\n❌ WiFi Connection Failed!");
+    Serial.println("Check SSID and Password");
+  }
+}
+
+// ==================== WEBSOCKET CONNECTION ====================
+void connectWebSocket() {
+  Serial.print("Connecting to WebSocket server...");
+  
+  webSocketClient.begin(server, port);
+  webSocketClient.onMessage(onMessage);
+  webSocketClient.onOpen(onOpen);
+  webSocketClient.onClose(onClose);
+  
+  delay(1000);
+  
+  if (webSocketClient.isConnected()) {
+    wsConnected = true;
+    Serial.println(" ✅ Connected!");
+    
+    // Send identification message
+    sendIdentification();
+  } else {
+    wsConnected = false;
+    Serial.println(" ❌ Failed to connect!");
+  }
+}
+
+void attemptReconnect() {
+  unsigned long now = millis();
+  if (now - lastReconnectAttempt > 5000) {
+    lastReconnectAttempt = now;
+    Serial.println("Attempting to reconnect...");
+    connectWebSocket();
+  }
+}
+
+// ==================== WEBSOCKET EVENTS ====================
+void onOpen() {
+  wsConnected = true;
+  Serial.println("🟢 WebSocket Connected!");
+  sendIdentification();
+}
+
+void onClose() {
+  wsConnected = false;
+  Serial.println("🔴 WebSocket Disconnected!");
+}
+
+void onMessage(String message) {
+  Serial.println("📩 Received: " + message);
+  lastCommandTime = millis();
+  
+  // Parse JSON
+  StaticJsonDocument<512> doc;
+  DeserializationError error = deserializeJson(doc, message);
+  
+  if (error) {
+    Serial.println("❌ JSON Parse Error!");
+    return;
+  }
+  
+  // Check message type
+  const char* type = doc["type"];
+  
+  if (strcmp(type, "manualUpdate") == 0) {
+    // Manual update from API
+    const char* location = doc["location"];
+    const char* status = doc["data"]["status"];
+    
+    if (location && status) {
+      // Check if this is for Kandy
+      if (strcmp(location, LOCATION_ID) == 0) {
+        Serial.printf("🎯 Kandy light update: %s\n", status);
+        setLights(status);
+        currentStatus = status;
+        lastCommand = status;
+      }
+    }
+  } 
+  else if (strcmp(type, "statusChange") == 0) {
+    // Automatic cycle update
+    JsonArray changes = doc["changes"];
+    for (JsonObject change : changes) {
+      const char* location = change["location"];
+      const char* status = change["newStatus"];
+      
+      if (location && status) {
+        if (strcmp(location, LOCATION_ID) == 0) {
+          Serial.printf("🔄 Kandy cycle update: %s\n", status);
+          setLights(status);
+          currentStatus = status;
+          lastCommand = status;
+        }
+      }
+    }
+  }
+  else if (strcmp(type, "emergencyOverride") == 0) {
+    // Emergency override
+    const char* location = doc["location"];
+    const char* action = doc["action"];
+    
+    if (location && action) {
+      if (strcmp(location, LOCATION_ID) == 0) {
+        Serial.printf("🚨 EMERGENCY! Kandy set to %s\n", action);
+        setLights(action);
+        currentStatus = action;
+        lastCommand = action;
+        
+        // Activate buzzer for emergency
+        if (strcmp(action, "red") == 0 || strcmp(action, "green") == 0) {
+          activateBuzzer();
+        }
+      }
+    }
+  }
+  else if (strcmp(type, "initialState") == 0) {
+    // Initial state from server
+    JsonObject data = doc["data"];
+    if (data[LOCATION_ID]) {
+      const char* status = data[LOCATION_ID]["status"];
+      if (status) {
+        Serial.printf("📊 Initial Kandy state: %s\n", status);
+        setLights(status);
+        currentStatus = status;
+        lastCommand = status;
+      }
+    }
+  }
+}
+
+// ==================== SEND MESSAGES ====================
+void sendIdentification() {
+  if (!wsConnected) return;
+  
+  StaticJsonDocument<256> doc;
+  doc["type"] = "identification";
+  doc["device"] = "traffic_light";
+  doc["city"] = CITY_NAME;
+  doc["location"] = LOCATION_ID;
+  doc["ip"] = WiFi.localIP().toString();
+  doc["timestamp"] = millis();
+  
+  String message;
+  serializeJson(doc, message);
+  
+  webSocketClient.send(message);
+  Serial.println("📤 Sent identification: " + message);
+}
+
+void sendHeartbeat() {
+  unsigned long now = millis();
+  if (now - lastHeartbeat > 5000) {
+    lastHeartbeat = now;
+    
+    if (wsConnected) {
+      StaticJsonDocument<128> doc;
+      doc["type"] = "heartbeat";
+      doc["city"] = CITY_NAME;
+      doc["status"] = currentStatus;
+      doc["timestamp"] = millis();
+      
+      String message;
+      serializeJson(doc, message);
+      
+      webSocketClient.send(message);
+    }
+  }
+}
+
+// ==================== TRAFFIC LIGHT CONTROL ====================
+void setLights(String status) {
+  // Turn off all lights first
+  setAllLightsOff();
+  
+  if (status == "red") {
+    digitalWrite(RED_PIN, HIGH);
+    Serial.println("🔴 RED light ON (Kandy)");
+  } 
+  else if (status == "yellow") {
+    digitalWrite(YELLOW_PIN, HIGH);
+    Serial.println("🟡 YELLOW light ON (Kandy)");
+  } 
+  else if (status == "green") {
+    digitalWrite(GREEN_PIN, HIGH);
+    Serial.println("🟢 GREEN light ON (Kandy)");
+  } 
+  else {
+    // Invalid status, turn all off
+    setAllLightsOff();
+    Serial.println("⚠️ Unknown status, all lights OFF");
+  }
+}
+
+void setAllLightsOff() {
+  digitalWrite(RED_PIN, LOW);
+  digitalWrite(YELLOW_PIN, LOW);
+  digitalWrite(GREEN_PIN, LOW);
+  digitalWrite(BUZZER_PIN, LOW);
+}
+
+// ==================== FAIL-SAFE MECHANISM ====================
+void checkFailSafe() {
+  unsigned long now = millis();
+  
+  // If no command received for FAIL_SAFE_TIMEOUT, activate fail-safe
+  if (wsConnected && (now - lastCommandTime > FAIL_SAFE_TIMEOUT)) {
+    Serial.println("⚠️ FAIL-SAFE: No command received, activating yellow blinking");
+    
+    // Blink yellow for fail-safe
+    static unsigned long lastBlink = 0;
+    static bool blinkState = false;
+    
+    if (now - lastBlink > 1000) {
+      lastBlink = now;
+      blinkState = !blinkState;
+      
+      if (blinkState) {
+        digitalWrite(YELLOW_PIN, HIGH);
+      } else {
+        digitalWrite(YELLOW_PIN, LOW);
+      }
+    }
+  }
+}
+
+// ==================== BUZZER CONTROL ====================
+void activateBuzzer() {
+  digitalWrite(BUZZER_PIN, HIGH);
+  delay(500);
+  digitalWrite(BUZZER_PIN, LOW);
+  delay(500);
+  digitalWrite(BUZZER_PIN, HIGH);
+  delay(500);
+  digitalWrite(BUZZER_PIN, LOW);
+}
+
+// ==================== SERIAL COMMANDS ====================
+void serialCommands() {
+  if (Serial.available()) {
+    String command = Serial.readStringUntil('\n');
+    command.trim();
+    
+    if (command == "status") {
+      Serial.printf("Current Status: %s\n", currentStatus.c_str());
+      Serial.printf("WS Connected: %s\n", wsConnected ? "Yes" : "No");
+      Serial.printf("Last Command: %s\n", lastCommand.c_str());
+    }
+    else if (command == "test red") {
+      Serial.println("Testing RED light");
+      setLights("red");
+    }
+    else if (command == "test yellow") {
+      Serial.println("Testing YELLOW light");
+      setLights("yellow");
+    }
+    else if (command == "test green") {
+      Serial.println("Testing GREEN light");
+      setLights("green");
+    }
+    else if (command == "test off") {
+      Serial.println("Turning all lights OFF");
+      setAllLightsOff();
+    }
+    else if (command == "reboot") {
+      Serial.println("Rebooting...");
+      ESP.restart();
+    }
+    else if (command == "help") {
+      Serial.println("\nAvailable commands:");
+      Serial.println("  status       - Show current status");
+      Console commands
+      Serial.println("  test red     - Test RED light");
+      Serial.println("  test yellow  - Test YELLOW light");
+      Serial.println("  test green   - Test GREEN light");
+      Serial.println("  test off     - Turn all lights off");
+      Serial.println("  reboot       - Restart ESP32");
+      Serial.println("  help         - Show this help");
+    }
+  }
+}

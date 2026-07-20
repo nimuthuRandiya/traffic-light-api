@@ -1,0 +1,12 @@
+{
+  "name": "sri-lanka-traffic-web",
+  "version": "1.0.0",
+  "description": "A Node.js web app about traffic congestion in Sri Lanka",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ws": "^8.21.1"
+  }
+}
