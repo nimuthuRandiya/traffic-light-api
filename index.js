@@ -1,19 +1,18 @@
 const http = require('http');
 const WebSocket = require('ws');
-const { trafficLights, iotData, emergencyOverrides, updateTrafficLights, updateIotData, broadcastUpdate, clients } = require('./trafficSystem');
+const { trafficLights, iotData, emergencyOverrides, updateTrafficLights, updateIotData, broadcastUpdate, clients, calculateStats } = require('./trafficSystem');
 const { handleApiRequest } = require('./apiHandler');
 
 const port = process.env.PORT || 3000;
 
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   const url = new URL(req.url, `http://localhost:${port}`);
   const pathname = url.pathname;
 
-  // API Gateway
   if (pathname.startsWith('/api/')) {
     handleApiRequest(req, res, url);
     return;
@@ -39,6 +38,7 @@ wss.on('connection', (ws) => {
     stats: calculateStats(),
     iot: iotData,
     emergencyOverrides: emergencyOverrides,
+    directions: ['up', 'down', 'left', 'right'],
     timestamp: new Date().toISOString()
   }));
   
@@ -69,60 +69,47 @@ setInterval(() => {
 server.listen(port, () => {
   console.log('========================================');
   console.log('Road Lanka IoT Traffic Management System API');
+  console.log('with Directional Control (Up/Down/Left/Right)');
   console.log('========================================');
   console.log(`Server running at http://localhost:${port}`);
   console.log(`Total cities monitored: ${Object.keys(trafficLights).length}`);
+  console.log(`Total traffic directions: ${Object.keys(trafficLights).length * 4}`);
+  console.log(`Directions available: Up, Down, Left, Right`);
+  console.log('\nKurunegala Intersections:');
+  console.log(`   1. Kurunegala - Main (${Object.keys(trafficLights.kurunegala_1.directions).length} directions)`);
+  console.log(`   2. Kurunegala - Town Hall (${Object.keys(trafficLights.kurunegala_2.directions).length} directions)`);
+  console.log(`   3. Kurunegala - Railway (${Object.keys(trafficLights.kurunegala_3.directions).length} directions)`);
+  console.log(`   4. Kurunegala - Hospital (${Object.keys(trafficLights.kurunegala_4.directions).length} directions)`);
+  console.log(`   5. Kurunegala - Bus Stand (${Object.keys(trafficLights.kurunegala_5.directions).length} directions)`);
   console.log('\nIoT Devices Connected:');
   console.log(`   📷 Computer Vision Cameras: ${Object.keys(iotData.cameras).length}`);
   console.log(`   🔄 Inductive Loop Sensors: ${Object.keys(iotData.inductiveLoops).length}`);
   console.log(`   🌫️ Air Quality Sensors: ${Object.keys(iotData.airQuality).length}`);
   console.log(`   🚌 Fleet GPS Trackers: ${Object.keys(iotData.fleet).length}`);
   console.log('\nAvailable API Endpoints:');
-  console.log(`   GET  /api/health`);
-  console.log(`   GET  /api/traffic-lights`);
-  console.log(`   GET  /api/traffic-lights/:location`);
-  console.log(`   GET  /api/traffic-lights/status?status=red|yellow|green`);
-  console.log(`   GET  /api/provinces`);
-  console.log(`   GET  /api/stats`);
-  console.log(`   GET  /api/iot`);
-  console.log(`   GET  /api/iot/cameras`);
-  console.log(`   GET  /api/iot/loops`);
-  console.log(`   GET  /api/iot/airquality`);
-  console.log(`   GET  /api/iot/fleet`);
-  console.log(`   GET  /api/emergency/overrides`);
-  console.log(`   POST /api/emergency/green`);
-  console.log(`   POST /api/emergency/red`);
-  console.log(`   PUT  /api/traffic-lights/:location`);
-  console.log(`   POST /api/traffic-lights/batch`);
+  console.log('   GET  /api/health');
+  console.log('   GET  /api/traffic-lights');
+  console.log('   GET  /api/traffic-lights/:location');
+  console.log('   GET  /api/traffic-lights/status?status=red|yellow|green&direction=up|down|left|right');
+  console.log('   GET  /api/provinces');
+  console.log('   GET  /api/stats');
+  console.log('   GET  /api/iot');
+  console.log('   GET  /api/iot/cameras');
+  console.log('   GET  /api/iot/loops');
+  console.log('   GET  /api/iot/airquality');
+  console.log('   GET  /api/iot/fleet');
+  console.log('   GET  /api/emergency/overrides');
+  console.log('   POST /api/emergency/green');
+  console.log('   POST /api/emergency/red');
+  console.log('   POST /api/trafficlight/direction');
+  console.log('   POST /api/trafficlight/bulk/direction');
+  console.log('   PUT  /api/traffic-lights/:location');
+  console.log('   POST /api/traffic-lights/batch');
   console.log('\nWebSocket:');
   console.log(`   ws://localhost:${port} (Real-time updates)`);
   console.log('========================================');
   console.log('Press Ctrl+C to stop the server');
 });
-
-function calculateStats() {
-  const total = Object.keys(trafficLights).length;
-  const statusCounts = { red: 0, yellow: 0, green: 0 };
-  const provinceStats = {};
-  
-  Object.keys(trafficLights).forEach(key => {
-    const light = trafficLights[key];
-    statusCounts[light.status]++;
-    
-    if (!provinceStats[light.province]) {
-      provinceStats[light.province] = { total: 0, red: 0, yellow: 0, green: 0 };
-    }
-    provinceStats[light.province].total++;
-    provinceStats[light.province][light.status]++;
-  });
-  
-  return {
-    totalCities: total,
-    statusDistribution: statusCounts,
-    provinceStats: provinceStats,
-    timestamp: new Date().toISOString()
-  };
-}
 
 function broadcastIotUpdates() {
   const changes = {};
