@@ -553,6 +553,109 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
+  // ==================== EMERGENCY STOP - CLEAR ALL OVERRIDES ====================
+  // Emergency stop - Clear all emergency overrides
+  if (pathname === '/api/emergency/stop' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+
+    req.on('end', () => {
+      setCorsHeaders(res);
+      try {
+        const data = JSON.parse(body);
+        const { location } = data;
+
+        // If location is provided, clear only that location
+        if (location) {
+          if (!trafficLights[location]) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ 
+              error: 'Location not found',
+              availableLocations: Object.keys(trafficLights)
+            }));
+            return;
+          }
+
+          // Clear emergency override for specific location
+          if (emergencyOverrides[location]) {
+            delete emergencyOverrides[location];
+            // Reset to green
+            trafficLights[location].status = 'green';
+            trafficLights[location].timer = 60;
+
+            broadcastUpdate({
+              type: 'emergencyStopped',
+              location: location,
+              data: trafficLights[location],
+              timestamp: new Date().toISOString()
+            });
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+              success: true,
+              message: `Emergency override cleared for ${trafficLights[location].city}`,
+              location: location,
+              city: trafficLights[location].city,
+              timestamp: new Date().toISOString()
+            }));
+          } else {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+              success: true,
+              message: `No active emergency override for ${trafficLights[location].city}`,
+              location: location,
+              timestamp: new Date().toISOString()
+            }));
+          }
+        } else {
+          // Clear ALL emergency overrides
+          const clearedLocations = [];
+          Object.keys(emergencyOverrides).forEach(key => {
+            if (trafficLights[key]) {
+              trafficLights[key].status = 'green';
+              trafficLights[key].timer = 60;
+              clearedLocations.push({
+                location: key,
+                city: trafficLights[key].city
+              });
+            }
+          });
+          
+          // Clear all overrides
+          Object.keys(emergencyOverrides).forEach(key => {
+            delete emergencyOverrides[key];
+          });
+
+          if (clearedLocations.length > 0) {
+            broadcastUpdate({
+              type: 'emergencyStopped',
+              locations: clearedLocations,
+              timestamp: new Date().toISOString()
+            });
+          }
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: true,
+            message: `Cleared ${clearedLocations.length} emergency overrides`,
+            cleared: clearedLocations,
+            timestamp: new Date().toISOString()
+          }));
+        }
+      } catch (error) {
+        console.error('Emergency stop error:', error);
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ 
+          error: 'Invalid request',
+          message: error.message
+        }));
+      }
+    });
+    return;
+  }
+
   // ==================== TRAFFIC LIGHTS ENDPOINTS ====================
 
   // Get all traffic lights
@@ -811,6 +914,7 @@ function handleApiRequest(req, res, url) {
       '/api/emergency/overrides',
       '/api/emergency/green',
       '/api/emergency/red',
+      '/api/emergency/stop (POST) - Clear emergency overrides',
       '/api/traffic-lights',
       '/api/traffic-lights/:location',
       '/api/traffic-lights/status?status=red|yellow|green',
@@ -823,13 +927,8 @@ function handleApiRequest(req, res, url) {
       'POST /api/trafficlight': {
         body: { city: 'colombo', status: 'green' }
       },
-      'POST /api/trafficlight/bulk': {
-        body: {
-          updates: [
-            { city: 'colombo', status: 'red' },
-            { city: 'kandy', status: 'green' }
-          ]
-        }
+      'POST /api/emergency/stop': {
+        body: { location: 'colombo' } // or {} to clear all
       }
     }
   }));
