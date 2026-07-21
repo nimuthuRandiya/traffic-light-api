@@ -1,4 +1,4 @@
-const { trafficLights, iotData, emergencyOverrides, broadcastUpdate } = require('./trafficSystem');
+const { trafficLights, iotData, emergencyOverrides, broadcastUpdate, getCityDirections, getDirectionStatus, setDirectionStatus, calculateStats } = require('./trafficSystem');
 
 function handleApiRequest(req, res, url) {
   const pathname = url.pathname;
@@ -33,23 +33,380 @@ function handleApiRequest(req, res, url) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ 
       status: 'ok', 
-      message: 'Road Lanka IoT Traffic Management System API',
-      version: '2.0.0',
+      message: 'Road Lanka IoT Traffic Management System API with Directional Control',
+      version: '3.0.0',
       totalCities: Object.keys(trafficLights).length,
+      totalDirections: Object.keys(trafficLights).length * 4,
       iotDevices: {
         cameras: Object.keys(iotData.cameras).length,
         inductiveLoops: Object.keys(iotData.inductiveLoops).length,
         airQuality: Object.keys(iotData.airQuality).length,
         fleet: Object.keys(iotData.fleet).length
       },
+      directions: ['up', 'down', 'left', 'right'],
       timestamp: new Date().toISOString()
     }));
     return;
   }
 
-  // ==================== TRAFFIC LIGHT CONTROL ====================
+  // ==================== DIRECTIONAL TRAFFIC LIGHT CONTROL ====================
   
-  // Set traffic light by city name
+  // Set traffic light by city and direction
+  if (pathname === '/api/trafficlight/direction' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+
+    req.on('end', () => {
+      setCorsHeaders(res);
+      try {
+        const data = JSON.parse(body);
+        const { city, direction, status, timer } = data;
+
+        if (!city) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            error: 'City name is required',
+            example: {
+              city: 'colombo',
+              direction: 'up',
+              status: 'green',
+              timer: 60
+            }
+          }));
+          return;
+        }
+
+        // Find city in traffic lights (case insensitive)
+        const cityKey = Object.keys(trafficLights).find(
+          key => trafficLights[key].city.toLowerCase() === city.toLowerCase()
+        );
+
+        if (!cityKey) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            error: 'City not found',
+            availableCities: Object.values(trafficLights).map(t => t.city),
+            timestamp: new Date().toISOString()
+          }));
+          return;
+        }
+
+        // Validate direction
+        const validDirections = ['up', 'down', 'left', 'right'];
+        if (!direction || !validDirections.includes(direction.toLowerCase())) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            error: 'Invalid direction',
+            validDirections: validDirections,
+            timestamp: new Date().toISOString()
+          }));
+          return;
+        }
+
+        // Validate status
+        if (!status || !['red', 'yellow', 'green'].includes(status.toLowerCase())) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            error: 'Invalid status',
+            validStatuses: ['red', 'yellow', 'green'],
+            timestamp: new Date().toISOString()
+          }));
+          return;
+        }
+
+        const dir = direction.toLowerCase();
+        const newStatus = status.toLowerCase();
+        
+        // Update traffic light direction
+        const success = setDirectionStatus(cityKey, dir, newStatus, timer || undefined);
+        
+        if (!success) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            error: 'Failed to update direction',
+            direction: dir,
+            city: cityKey
+          }));
+          return;
+        }
+
+        // Remove any emergency override for this location
+        if (emergencyOverrides[cityKey]) {
+          delete emergencyOverrides[cityKey];
+        }
+
+        // Broadcast update via WebSocket
+        broadcastUpdate({
+          type: 'directionManualUpdate',
+          location: cityKey,
+          direction: dir,
+          data: trafficLights[cityKey].directions[dir],
+          city: trafficLights[cityKey].city,
+          province: trafficLights[cityKey].province,
+          timestamp: new Date().toISOString()
+        });
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          success: true,
+          message: `Direction ${dir} traffic light for ${trafficLights[cityKey].city} set to ${newStatus}`,
+          location: cityKey,
+          city: trafficLights[cityKey].city,
+          province: trafficLights[cityKey].province,
+          direction: dir,
+          status: newStatus,
+          timer: trafficLights[cityKey].directions[dir].timer,
+          timestamp: new Date().toISOString()
+        }));
+
+      } catch (error) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          error: 'Invalid request',
+          message: error.message,
+          example: {
+            city: 'colombo',
+            direction: 'up',
+            status: 'green',
+            timer: 60
+          }
+        }));
+      }
+    });
+    return;
+  }
+
+  // Get traffic light status by city name with all directions
+  if (pathname === '/api/trafficlight/direction' && req.method === 'GET') {
+    setCorsHeaders(res);
+    const city = url.searchParams.get('city');
+    const direction = url.searchParams.get('direction');
+    
+    if (city) {
+      const cityKey = Object.keys(trafficLights).find(
+        key => trafficLights[key].city.toLowerCase() === city.toLowerCase()
+      );
+
+      if (!cityKey) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          error: 'City not found',
+          availableCities: Object.values(trafficLights).map(t => t.city),
+          timestamp: new Date().toISOString()
+        }));
+        return;
+      }
+
+      // If direction is specified, return only that direction
+      if (direction) {
+        const dirData = getDirectionStatus(cityKey, direction.toLowerCase());
+        if (!dirData) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            error: 'Direction not found',
+            validDirections: ['up', 'down', 'left', 'right'],
+            timestamp: new Date().toISOString()
+          }));
+          return;
+        }
+        
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          location: cityKey,
+          city: trafficLights[cityKey].city,
+          province: trafficLights[cityKey].province,
+          direction: direction.toLowerCase(),
+          status: dirData.status,
+          timer: dirData.timer,
+          timestamp: new Date().toISOString()
+        }));
+        return;
+      }
+
+      // Return all directions
+      const directions = getCityDirections(cityKey);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        location: cityKey,
+        city: trafficLights[cityKey].city,
+        province: trafficLights[cityKey].province,
+        directions: directions,
+        timestamp: new Date().toISOString()
+      }));
+      return;
+    }
+
+    // Get all cities with their directions
+    const allLights = {};
+    Object.keys(trafficLights).forEach(key => {
+      allLights[key] = {
+        city: trafficLights[key].city,
+        province: trafficLights[key].province,
+        directions: trafficLights[key].directions
+      };
+    });
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      total: Object.keys(allLights).length,
+      totalDirections: Object.keys(allLights).length * 4,
+      data: allLights,
+      directions: ['up', 'down', 'left', 'right'],
+      timestamp: new Date().toISOString()
+    }));
+    return;
+  }
+
+  // ==================== BULK DIRECTIONAL CONTROL ====================
+  
+  // Set multiple directions for a city
+  if (pathname === '/api/trafficlight/bulk/direction' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+
+    req.on('end', () => {
+      setCorsHeaders(res);
+      try {
+        const data = JSON.parse(body);
+        const { city, updates } = data;
+
+        if (!city) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            error: 'City name is required',
+            example: {
+              city: 'colombo',
+              updates: {
+                up: { status: 'green', timer: 60 },
+                down: { status: 'red', timer: 30 }
+              }
+            }
+          }));
+          return;
+        }
+
+        const cityKey = Object.keys(trafficLights).find(
+          key => trafficLights[key].city.toLowerCase() === city.toLowerCase()
+        );
+
+        if (!cityKey) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            error: 'City not found',
+            availableCities: Object.values(trafficLights).map(t => t.city),
+            timestamp: new Date().toISOString()
+          }));
+          return;
+        }
+
+        if (!updates || typeof updates !== 'object') {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            error: 'Updates object is required',
+            example: {
+              city: 'colombo',
+              updates: {
+                up: { status: 'green', timer: 60 },
+                down: { status: 'red', timer: 30 }
+              }
+            }
+          }));
+          return;
+        }
+
+        const results = [];
+        const errors = [];
+        const validDirections = ['up', 'down', 'left', 'right'];
+
+        Object.keys(updates).forEach(dir => {
+          if (!validDirections.includes(dir)) {
+            errors.push({
+              direction: dir,
+              error: 'Invalid direction. Use: up, down, left, right'
+            });
+            return;
+          }
+
+          const update = updates[dir];
+          if (!update.status || !['red', 'yellow', 'green'].includes(update.status.toLowerCase())) {
+            errors.push({
+              direction: dir,
+              error: 'Invalid status. Use: red, yellow, or green'
+            });
+            return;
+          }
+
+          const newStatus = update.status.toLowerCase();
+          const timer = update.timer || undefined;
+          
+          const success = setDirectionStatus(cityKey, dir, newStatus, timer);
+          
+          if (success) {
+            results.push({
+              direction: dir,
+              status: newStatus,
+              timer: trafficLights[cityKey].directions[dir].timer
+            });
+          } else {
+            errors.push({
+              direction: dir,
+              error: 'Failed to update direction'
+            });
+          }
+        });
+
+        if (emergencyOverrides[cityKey]) {
+          delete emergencyOverrides[cityKey];
+        }
+
+        // Broadcast bulk update
+        if (results.length > 0) {
+          broadcastUpdate({
+            type: 'bulkDirectionUpdate',
+            location: cityKey,
+            city: trafficLights[cityKey].city,
+            province: trafficLights[cityKey].province,
+            updates: results,
+            timestamp: new Date().toISOString()
+          });
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          success: true,
+          totalProcessed: results.length,
+          totalErrors: errors.length,
+          city: trafficLights[cityKey].city,
+          results: results,
+          errors: errors,
+          timestamp: new Date().toISOString()
+        }));
+
+      } catch (error) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          error: 'Invalid request',
+          message: error.message,
+          example: {
+            city: 'colombo',
+            updates: {
+              up: { status: 'green', timer: 60 },
+              down: { status: 'red', timer: 30 }
+            }
+          }
+        }));
+      }
+    });
+    return;
+  }
+
+  // ==================== TRAFFIC LIGHT CONTROL (Legacy - Single status for backward compatibility) ====================
+  
+  // Set traffic light by city name (Sets all directions to same status)
   if (pathname === '/api/trafficlight' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => {
@@ -74,7 +431,6 @@ function handleApiRequest(req, res, url) {
           return;
         }
 
-        // Find city in traffic lights (case insensitive)
         const cityKey = Object.keys(trafficLights).find(
           key => trafficLights[key].city.toLowerCase() === city.toLowerCase()
         );
@@ -89,7 +445,6 @@ function handleApiRequest(req, res, url) {
           return;
         }
 
-        // Validate status
         if (!status || !['red', 'yellow', 'green'].includes(status.toLowerCase())) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({
@@ -100,17 +455,17 @@ function handleApiRequest(req, res, url) {
           return;
         }
 
-        // Update traffic light
         const newStatus = status.toLowerCase();
-        trafficLights[cityKey].status = newStatus;
-        trafficLights[cityKey].timer = newStatus === 'green' ? 60 : newStatus === 'yellow' ? 5 : 30;
+        const directions = ['up', 'down', 'left', 'right'];
+        
+        directions.forEach(dir => {
+          setDirectionStatus(cityKey, dir, newStatus);
+        });
 
-        // Remove any emergency override for this location
         if (emergencyOverrides[cityKey]) {
           delete emergencyOverrides[cityKey];
         }
 
-        // Broadcast update via WebSocket
         broadcastUpdate({
           type: 'manualUpdate',
           location: cityKey,
@@ -123,12 +478,12 @@ function handleApiRequest(req, res, url) {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
           success: true,
-          message: `Traffic light for ${trafficLights[cityKey].city} set to ${newStatus}`,
+          message: `All directions for ${trafficLights[cityKey].city} set to ${newStatus}`,
           location: cityKey,
           city: trafficLights[cityKey].city,
           province: trafficLights[cityKey].province,
           status: newStatus,
-          timer: trafficLights[cityKey].timer,
+          directions: trafficLights[cityKey].directions,
           timestamp: new Date().toISOString()
         }));
 
@@ -147,7 +502,7 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
-  // Get traffic light status by city name
+  // Get traffic light status by city name (Legacy - returns all directions)
   if (pathname === '/api/trafficlight' && req.method === 'GET') {
     setCorsHeaders(res);
     const city = url.searchParams.get('city');
@@ -172,163 +527,43 @@ function handleApiRequest(req, res, url) {
         location: cityKey,
         city: trafficLights[cityKey].city,
         province: trafficLights[cityKey].province,
-        status: trafficLights[cityKey].status,
-        timer: trafficLights[cityKey].timer,
+        directions: trafficLights[cityKey].directions,
         timestamp: new Date().toISOString()
       }));
       return;
     }
 
-    // Get all traffic lights with city names
     const allLights = {};
     Object.keys(trafficLights).forEach(key => {
       allLights[key] = {
         city: trafficLights[key].city,
         province: trafficLights[key].province,
-        status: trafficLights[key].status,
-        timer: trafficLights[key].timer
+        directions: trafficLights[key].directions
       };
     });
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       total: Object.keys(allLights).length,
+      totalDirections: Object.keys(allLights).length * 4,
       data: allLights,
+      directions: ['up', 'down', 'left', 'right'],
       timestamp: new Date().toISOString()
     }));
     return;
   }
 
-  // ==================== BULK TRAFFIC LIGHT CONTROL ====================
-  
-  // Set multiple traffic lights by city name
-  if (pathname === '/api/trafficlight/bulk' && req.method === 'POST') {
-    let body = '';
-    req.on('data', chunk => {
-      body += chunk.toString();
-    });
-
-    req.on('end', () => {
-      setCorsHeaders(res);
-      try {
-        const data = JSON.parse(body);
-        const { updates } = data;
-
-        if (!updates || !Array.isArray(updates) || updates.length === 0) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({
-            error: 'Updates array is required',
-            example: {
-              updates: [
-                { city: 'colombo', status: 'red' },
-                { city: 'kandy', status: 'green' }
-              ]
-            }
-          }));
-          return;
-        }
-
-        const results = [];
-        const errors = [];
-
-        updates.forEach(update => {
-          const { city, status } = update;
-          
-          if (!city || !status) {
-            errors.push({
-              city: city || 'unknown',
-              error: 'City and status are required'
-            });
-            return;
-          }
-
-          const cityKey = Object.keys(trafficLights).find(
-            key => trafficLights[key].city.toLowerCase() === city.toLowerCase()
-          );
-
-          if (!cityKey) {
-            errors.push({
-              city: city,
-              error: 'City not found'
-            });
-            return;
-          }
-
-          if (!['red', 'yellow', 'green'].includes(status.toLowerCase())) {
-            errors.push({
-              city: city,
-              error: 'Invalid status. Use: red, yellow, or green'
-            });
-            return;
-          }
-
-          const newStatus = status.toLowerCase();
-          trafficLights[cityKey].status = newStatus;
-          trafficLights[cityKey].timer = newStatus === 'green' ? 60 : newStatus === 'yellow' ? 5 : 30;
-
-          if (emergencyOverrides[cityKey]) {
-            delete emergencyOverrides[cityKey];
-          }
-
-          results.push({
-            location: cityKey,
-            city: trafficLights[cityKey].city,
-            province: trafficLights[cityKey].province,
-            status: newStatus,
-            timer: trafficLights[cityKey].timer
-          });
-        });
-
-        // Broadcast bulk update
-        if (results.length > 0) {
-          broadcastUpdate({
-            type: 'bulkManualUpdate',
-            updates: results,
-            timestamp: new Date().toISOString()
-          });
-        }
-
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({
-          success: true,
-          totalProcessed: results.length,
-          totalErrors: errors.length,
-          results: results,
-          errors: errors,
-          timestamp: new Date().toISOString()
-        }));
-
-      } catch (error) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({
-          error: 'Invalid request',
-          message: error.message,
-          example: {
-            updates: [
-              { city: 'colombo', status: 'red' },
-              { city: 'kandy', status: 'green' }
-            ]
-          }
-        }));
-      }
-    });
-    return;
-  }
-
   // ==================== GET CITY LIST ====================
   
-  // Get all city names and their status
   if (pathname === '/api/cities' && req.method === 'GET') {
     setCorsHeaders(res);
     const cities = Object.keys(trafficLights).map(key => ({
       id: key,
       city: trafficLights[key].city,
       province: trafficLights[key].province,
-      status: trafficLights[key].status,
-      timer: trafficLights[key].timer
+      directions: trafficLights[key].directions
     }));
 
-    // Group by province
     const grouped = {};
     cities.forEach(city => {
       if (!grouped[city.province]) {
@@ -340,8 +575,10 @@ function handleApiRequest(req, res, url) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       total: cities.length,
+      totalDirections: cities.length * 4,
       cities: cities,
       grouped: grouped,
+      directions: ['up', 'down', 'left', 'right'],
       timestamp: new Date().toISOString()
     }));
     return;
@@ -349,7 +586,6 @@ function handleApiRequest(req, res, url) {
 
   // ==================== IOT ENDPOINTS ====================
 
-  // Get IoT data
   if (pathname === '/api/iot' && req.method === 'GET') {
     setCorsHeaders(res);
     const category = url.searchParams.get('category');
@@ -367,7 +603,6 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
-  // Get cameras
   if (pathname === '/api/iot/cameras' && req.method === 'GET') {
     setCorsHeaders(res);
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -379,7 +614,6 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
-  // Get inductive loops
   if (pathname === '/api/iot/loops' && req.method === 'GET') {
     setCorsHeaders(res);
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -391,7 +625,6 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
-  // Get air quality
   if (pathname === '/api/iot/airquality' && req.method === 'GET') {
     setCorsHeaders(res);
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -403,7 +636,6 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
-  // Get fleet
   if (pathname === '/api/iot/fleet' && req.method === 'GET') {
     setCorsHeaders(res);
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -417,7 +649,6 @@ function handleApiRequest(req, res, url) {
 
   // ==================== EMERGENCY ENDPOINTS ====================
 
-  // Get emergency overrides
   if (pathname === '/api/emergency/overrides' && req.method === 'GET') {
     setCorsHeaders(res);
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -429,7 +660,7 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
-  // Emergency override - Set green
+  // Emergency override - Set all directions to green
   if (pathname === '/api/emergency/green' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => {
@@ -451,8 +682,10 @@ function handleApiRequest(req, res, url) {
           return;
         }
 
-        trafficLights[location].status = 'green';
-        trafficLights[location].timer = 60;
+        const directions = ['up', 'down', 'left', 'right'];
+        directions.forEach(dir => {
+          setDirectionStatus(location, dir, 'green', 60);
+        });
 
         emergencyOverrides[location] = {
           action: 'green',
@@ -472,7 +705,7 @@ function handleApiRequest(req, res, url) {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
           success: true,
-          message: `Emergency override set for ${trafficLights[location].city}`,
+          message: `Emergency override (all green) set for ${trafficLights[location].city}`,
           location: location,
           city: trafficLights[location].city,
           action: 'green',
@@ -491,7 +724,7 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
-  // Emergency override - Set red
+  // Emergency override - Set all directions to red
   if (pathname === '/api/emergency/red' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => {
@@ -513,8 +746,10 @@ function handleApiRequest(req, res, url) {
           return;
         }
 
-        trafficLights[location].status = 'red';
-        trafficLights[location].timer = 60;
+        const directions = ['up', 'down', 'left', 'right'];
+        directions.forEach(dir => {
+          setDirectionStatus(location, dir, 'red', 60);
+        });
 
         emergencyOverrides[location] = {
           action: 'red',
@@ -534,7 +769,7 @@ function handleApiRequest(req, res, url) {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
           success: true,
-          message: `Emergency stop set for ${trafficLights[location].city}`,
+          message: `Emergency stop (all red) set for ${trafficLights[location].city}`,
           location: location,
           city: trafficLights[location].city,
           action: 'red',
@@ -553,116 +788,14 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
-  // ==================== EMERGENCY STOP - CLEAR ALL OVERRIDES ====================
-  // Emergency stop - Clear all emergency overrides
-  if (pathname === '/api/emergency/stop' && req.method === 'POST') {
-    let body = '';
-    req.on('data', chunk => {
-      body += chunk.toString();
-    });
-
-    req.on('end', () => {
-      setCorsHeaders(res);
-      try {
-        const data = JSON.parse(body);
-        const { location } = data;
-
-        // If location is provided, clear only that location
-        if (location) {
-          if (!trafficLights[location]) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ 
-              error: 'Location not found',
-              availableLocations: Object.keys(trafficLights)
-            }));
-            return;
-          }
-
-          // Clear emergency override for specific location
-          if (emergencyOverrides[location]) {
-            delete emergencyOverrides[location];
-            // Reset to green
-            trafficLights[location].status = 'green';
-            trafficLights[location].timer = 60;
-
-            broadcastUpdate({
-              type: 'emergencyStopped',
-              location: location,
-              data: trafficLights[location],
-              timestamp: new Date().toISOString()
-            });
-
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({
-              success: true,
-              message: `Emergency override cleared for ${trafficLights[location].city}`,
-              location: location,
-              city: trafficLights[location].city,
-              timestamp: new Date().toISOString()
-            }));
-          } else {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({
-              success: true,
-              message: `No active emergency override for ${trafficLights[location].city}`,
-              location: location,
-              timestamp: new Date().toISOString()
-            }));
-          }
-        } else {
-          // Clear ALL emergency overrides
-          const clearedLocations = [];
-          Object.keys(emergencyOverrides).forEach(key => {
-            if (trafficLights[key]) {
-              trafficLights[key].status = 'green';
-              trafficLights[key].timer = 60;
-              clearedLocations.push({
-                location: key,
-                city: trafficLights[key].city
-              });
-            }
-          });
-          
-          // Clear all overrides
-          Object.keys(emergencyOverrides).forEach(key => {
-            delete emergencyOverrides[key];
-          });
-
-          if (clearedLocations.length > 0) {
-            broadcastUpdate({
-              type: 'emergencyStopped',
-              locations: clearedLocations,
-              timestamp: new Date().toISOString()
-            });
-          }
-
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({
-            success: true,
-            message: `Cleared ${clearedLocations.length} emergency overrides`,
-            cleared: clearedLocations,
-            timestamp: new Date().toISOString()
-          }));
-        }
-      } catch (error) {
-        console.error('Emergency stop error:', error);
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ 
-          error: 'Invalid request',
-          message: error.message
-        }));
-      }
-    });
-    return;
-  }
-
   // ==================== TRAFFIC LIGHTS ENDPOINTS ====================
 
-  // Get all traffic lights
+  // Get all traffic lights with directions
   if (pathname === '/api/traffic-lights' && req.method === 'GET') {
     setCorsHeaders(res);
     const province = url.searchParams.get('province');
     const status = url.searchParams.get('status');
+    const direction = url.searchParams.get('direction');
     let data = trafficLights;
     
     if (province) {
@@ -675,10 +808,26 @@ function handleApiRequest(req, res, url) {
       data = filtered;
     }
     
-    if (status) {
+    if (status && direction) {
       const filtered = {};
       Object.keys(data).forEach(key => {
-        if (data[key].status === status) {
+        const dirData = data[key].directions[direction.toLowerCase()];
+        if (dirData && dirData.status === status) {
+          filtered[key] = data[key];
+        }
+      });
+      data = filtered;
+    } else if (status) {
+      const filtered = {};
+      Object.keys(data).forEach(key => {
+        const directions = ['up', 'down', 'left', 'right'];
+        let hasStatus = false;
+        directions.forEach(dir => {
+          if (data[key].directions[dir] && data[key].directions[dir].status === status) {
+            hasStatus = true;
+          }
+        });
+        if (hasStatus) {
           filtered[key] = data[key];
         }
       });
@@ -688,8 +837,10 @@ function handleApiRequest(req, res, url) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       total: Object.keys(data).length,
+      totalDirections: Object.keys(data).length * 4,
       province: province || 'all',
       status: status || 'all',
+      direction: direction || 'all',
       data: data,
       timestamp: new Date().toISOString()
     }));
@@ -708,8 +859,7 @@ function handleApiRequest(req, res, url) {
       provinces[province].push({
         id: key,
         city: trafficLights[key].city,
-        status: trafficLights[key].status,
-        timer: trafficLights[key].timer
+        directions: trafficLights[key].directions
       });
     });
     
@@ -721,7 +871,7 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
-  // Get specific traffic light
+  // Get specific traffic light with directions
   if (pathname.startsWith('/api/traffic-lights/') && req.method === 'GET') {
     setCorsHeaders(res);
     const location = pathname.split('/')[3];
@@ -730,6 +880,7 @@ function handleApiRequest(req, res, url) {
       res.end(JSON.stringify({
         location: location,
         data: trafficLights[location],
+        directions: ['up', 'down', 'left', 'right'],
         timestamp: new Date().toISOString()
       }));
     } else {
@@ -742,20 +893,30 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
-  // Get cities by status
+  // Get cities by status for a specific direction
   if (pathname === '/api/traffic-lights/status' && req.method === 'GET') {
     setCorsHeaders(res);
     const status = url.searchParams.get('status');
+    const direction = url.searchParams.get('direction') || 'up';
+    
     if (status && ['red', 'yellow', 'green'].includes(status)) {
       const filtered = {};
       Object.keys(trafficLights).forEach(key => {
-        if (trafficLights[key].status === status) {
-          filtered[key] = trafficLights[key];
+        const dirData = trafficLights[key].directions[direction.toLowerCase()];
+        if (dirData && dirData.status === status) {
+          filtered[key] = {
+            city: trafficLights[key].city,
+            province: trafficLights[key].province,
+            direction: direction.toLowerCase(),
+            status: dirData.status,
+            timer: dirData.timer
+          };
         }
       });
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: status,
+        direction: direction.toLowerCase(),
         count: Object.keys(filtered).length,
         data: filtered,
         timestamp: new Date().toISOString()
@@ -789,7 +950,7 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
-  // Update traffic light by location ID
+  // Update specific direction of a traffic light
   if (pathname.startsWith('/api/traffic-lights/') && req.method === 'PUT') {
     const location = pathname.split('/')[3];
     let body = '';
@@ -803,11 +964,15 @@ function handleApiRequest(req, res, url) {
       try {
         const updates = JSON.parse(body);
         if (trafficLights[location]) {
-          if (updates.status && ['red', 'yellow', 'green'].includes(updates.status)) {
-            trafficLights[location].status = updates.status;
-          }
-          if (updates.timer && typeof updates.timer === 'number' && updates.timer > 0) {
-            trafficLights[location].timer = updates.timer;
+          const { direction, status, timer } = updates;
+          
+          if (direction && ['up', 'down', 'left', 'right'].includes(direction)) {
+            if (status && ['red', 'yellow', 'green'].includes(status)) {
+              setDirectionStatus(location, direction, status, timer || undefined);
+            }
+            if (timer && typeof timer === 'number' && timer > 0) {
+              trafficLights[location].directions[direction].timer = timer;
+            }
           }
           
           broadcastUpdate({
@@ -859,11 +1024,9 @@ function handleApiRequest(req, res, url) {
         
         Object.keys(updates).forEach(location => {
           if (trafficLights[location]) {
-            if (updates[location].status && ['red', 'yellow', 'green'].includes(updates[location].status)) {
-              trafficLights[location].status = updates[location].status;
-            }
-            if (updates[location].timer && typeof updates[location].timer === 'number' && updates[location].timer > 0) {
-              trafficLights[location].timer = updates[location].timer;
+            const locationUpdates = updates[location];
+            if (locationUpdates.direction && locationUpdates.status) {
+              setDirectionStatus(location, locationUpdates.direction, locationUpdates.status, locationUpdates.timer || undefined);
             }
             results[location] = trafficLights[location];
           } else {
@@ -896,6 +1059,107 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
+  // Emergency stop - Clear all emergency overrides
+  if (pathname === '/api/emergency/stop' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+
+    req.on('end', () => {
+      setCorsHeaders(res);
+      try {
+        const data = JSON.parse(body);
+        const { location } = data;
+
+        if (location) {
+          if (!trafficLights[location]) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ 
+              error: 'Location not found',
+              availableLocations: Object.keys(trafficLights)
+            }));
+            return;
+          }
+
+          if (emergencyOverrides[location]) {
+            delete emergencyOverrides[location];
+            const directions = ['up', 'down', 'left', 'right'];
+            directions.forEach(dir => {
+              setDirectionStatus(location, dir, 'green', 60);
+            });
+
+            broadcastUpdate({
+              type: 'emergencyStopped',
+              location: location,
+              data: trafficLights[location],
+              timestamp: new Date().toISOString()
+            });
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+              success: true,
+              message: `Emergency override cleared for ${trafficLights[location].city}`,
+              location: location,
+              city: trafficLights[location].city,
+              timestamp: new Date().toISOString()
+            }));
+          } else {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+              success: true,
+              message: `No active emergency override for ${trafficLights[location].city}`,
+              location: location,
+              timestamp: new Date().toISOString()
+            }));
+          }
+        } else {
+          const clearedLocations = [];
+          Object.keys(emergencyOverrides).forEach(key => {
+            if (trafficLights[key]) {
+              const directions = ['up', 'down', 'left', 'right'];
+              directions.forEach(dir => {
+                setDirectionStatus(key, dir, 'green', 60);
+              });
+              clearedLocations.push({
+                location: key,
+                city: trafficLights[key].city
+              });
+            }
+          });
+          
+          Object.keys(emergencyOverrides).forEach(key => {
+            delete emergencyOverrides[key];
+          });
+
+          if (clearedLocations.length > 0) {
+            broadcastUpdate({
+              type: 'emergencyStopped',
+              locations: clearedLocations,
+              timestamp: new Date().toISOString()
+            });
+          }
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: true,
+            message: `Cleared ${clearedLocations.length} emergency overrides`,
+            cleared: clearedLocations,
+            timestamp: new Date().toISOString()
+          }));
+        }
+      } catch (error) {
+        console.error('Emergency stop error:', error);
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ 
+          error: 'Invalid request',
+          message: error.message
+        }));
+      }
+    });
+    return;
+  }
+
   // ==================== 404 ====================
   setCorsHeaders(res);
   res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -903,8 +1167,10 @@ function handleApiRequest(req, res, url) {
     error: 'API endpoint not found',
     availableEndpoints: [
       '/api/health',
-      '/api/trafficlight (POST/GET)',
-      '/api/trafficlight/bulk (POST)',
+      '/api/trafficlight (POST/GET) - Set all directions',
+      '/api/trafficlight/direction (POST/GET) - Set specific direction',
+      '/api/trafficlight/bulk (POST) - Bulk update all directions',
+      '/api/trafficlight/bulk/direction (POST) - Bulk update specific directions',
       '/api/cities (GET)',
       '/api/iot',
       '/api/iot/cameras',
@@ -914,48 +1180,28 @@ function handleApiRequest(req, res, url) {
       '/api/emergency/overrides',
       '/api/emergency/green',
       '/api/emergency/red',
-      '/api/emergency/stop (POST) - Clear emergency overrides',
+      '/api/emergency/stop (POST)',
       '/api/traffic-lights',
       '/api/traffic-lights/:location',
-      '/api/traffic-lights/status?status=red|yellow|green',
+      '/api/traffic-lights/status?status=red|yellow|green&direction=up|down|left|right',
       '/api/provinces',
       '/api/stats',
       '/api/traffic-lights/:location (PUT)',
       '/api/traffic-lights/batch (POST)'
     ],
+    directions: ['up', 'down', 'left', 'right'],
     example: {
-      'POST /api/trafficlight': {
-        body: { city: 'colombo', status: 'green' }
+      'POST /api/trafficlight/direction': {
+        body: { city: 'colombo', direction: 'up', status: 'green', timer: 60 }
+      },
+      'POST /api/trafficlight/bulk/direction': {
+        body: { city: 'colombo', updates: { up: { status: 'green', timer: 60 }, down: { status: 'red', timer: 30 } } }
       },
       'POST /api/emergency/stop': {
-        body: { location: 'colombo' } // or {} to clear all
+        body: { location: 'colombo' }
       }
     }
   }));
-}
-
-function calculateStats() {
-  const total = Object.keys(trafficLights).length;
-  const statusCounts = { red: 0, yellow: 0, green: 0 };
-  const provinceStats = {};
-  
-  Object.keys(trafficLights).forEach(key => {
-    const light = trafficLights[key];
-    statusCounts[light.status]++;
-    
-    if (!provinceStats[light.province]) {
-      provinceStats[light.province] = { total: 0, red: 0, yellow: 0, green: 0 };
-    }
-    provinceStats[light.province].total++;
-    provinceStats[light.province][light.status]++;
-  });
-  
-  return {
-    totalCities: total,
-    statusDistribution: statusCounts,
-    provinceStats: provinceStats,
-    timestamp: new Date().toISOString()
-  };
 }
 
 module.exports = { handleApiRequest };
