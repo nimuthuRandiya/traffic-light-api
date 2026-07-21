@@ -11,72 +11,72 @@ const trafficLights = {
     city: 'Colombo',
     province: 'Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 90,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 90 },
+      down: { status: 'green', timer: 90 },
+      left: { status: 'red', timer: 90 },
+      right: { status: 'red', timer: 90 }
     }
   },
   kandy: {
     city: 'Kandy',
     province: 'Central',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 75,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 75 },
+      down: { status: 'red', timer: 75 },
+      left: { status: 'green', timer: 75 },
+      right: { status: 'green', timer: 75 }
     }
   },
   galle: {
     city: 'Galle',
     province: 'Southern',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 70,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 70 },
+      down: { status: 'red', timer: 70 },
+      left: { status: 'green', timer: 70 },
+      right: { status: 'green', timer: 70 }
     }
   },
   negombo: {
     city: 'Negombo',
     province: 'Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 85,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 85 },
+      down: { status: 'green', timer: 85 },
+      left: { status: 'red', timer: 85 },
+      right: { status: 'red', timer: 85 }
     }
   },
   jaffna: {
     city: 'Jaffna',
     province: 'Northern',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 65,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 65 },
+      down: { status: 'red', timer: 65 },
+      left: { status: 'green', timer: 65 },
+      right: { status: 'green', timer: 65 }
     }
   },
   anuradhapura: {
     city: 'Anuradhapura',
     province: 'North Central',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 80,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 80 },
+      down: { status: 'green', timer: 80 },
+      left: { status: 'red', timer: 80 },
+      right: { status: 'red', timer: 80 }
     }
   },
   polonnaruwa: {
@@ -95,36 +95,36 @@ const trafficLights = {
     city: 'Badulla',
     province: 'Uva',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 70,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 70 },
+      down: { status: 'red', timer: 70 },
+      left: { status: 'green', timer: 70 },
+      right: { status: 'green', timer: 70 }
     }
   },
   ratnapura: {
     city: 'Ratnapura',
     province: 'Sabaragamuwa',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 75,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 75 },
+      down: { status: 'green', timer: 75 },
+      left: { status: 'red', timer: 75 },
+      right: { status: 'red', timer: 75 }
     }
   },
   kurunegala_1: {
     city: 'Kurunegala - Main',
     province: 'North Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 90,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 90 },
+      down: { status: 'green', timer: 90 },
+      left: { status: 'red', timer: 90 },
+      right: { status: 'red', timer: 90 }
     }
   },
   kurunegala_2: {
@@ -143,60 +143,60 @@ const trafficLights = {
     city: 'Kurunegala - Railway',
     province: 'North Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 65,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 65 },
+      down: { status: 'red', timer: 65 },
+      left: { status: 'green', timer: 65 },
+      right: { status: 'green', timer: 65 }
     }
   },
   kurunegala_4: {
     city: 'Kurunegala - Hospital',
     province: 'North Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 70,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 70 },
+      down: { status: 'green', timer: 70 },
+      left: { status: 'red', timer: 70 },
+      right: { status: 'red', timer: 70 }
     }
   },
   kurunegala_5: {
     city: 'Kurunegala - Bus Stand',
     province: 'North Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 80,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 80 },
+      down: { status: 'red', timer: 80 },
+      left: { status: 'green', timer: 80 },
+      right: { status: 'green', timer: 80 }
     }
   },
   matara: {
     city: 'Matara',
     province: 'Southern',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 65,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 65 },
+      down: { status: 'red', timer: 65 },
+      left: { status: 'green', timer: 65 },
+      right: { status: 'green', timer: 65 }
     }
   },
   batticaloa: {
     city: 'Batticaloa',
     province: 'Eastern',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 75,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 75 },
+      down: { status: 'green', timer: 75 },
+      left: { status: 'red', timer: 75 },
+      right: { status: 'red', timer: 75 }
     }
   },
   trincomalee: {
@@ -215,72 +215,72 @@ const trafficLights = {
     city: 'Kalutara',
     province: 'Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 70,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 70 },
+      down: { status: 'red', timer: 70 },
+      left: { status: 'green', timer: 70 },
+      right: { status: 'green', timer: 70 }
     }
   },
   avissawella: {
     city: 'Avissawella',
     province: 'Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 80,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 80 },
+      down: { status: 'green', timer: 80 },
+      left: { status: 'red', timer: 80 },
+      right: { status: 'red', timer: 80 }
     }
   },
   gampaha: {
     city: 'Gampaha',
     province: 'Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 65,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 65 },
+      down: { status: 'red', timer: 65 },
+      left: { status: 'green', timer: 65 },
+      right: { status: 'green', timer: 65 }
     }
   },
   matale: {
     city: 'Matale',
     province: 'Central',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 70,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 70 },
+      down: { status: 'green', timer: 70 },
+      left: { status: 'red', timer: 70 },
+      right: { status: 'red', timer: 70 }
     }
   },
   nugegoda: {
     city: 'Nugegoda',
     province: 'Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 75,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 75 },
+      down: { status: 'red', timer: 75 },
+      left: { status: 'green', timer: 75 },
+      right: { status: 'green', timer: 75 }
     }
   },
   moratuwa: {
     city: 'Moratuwa',
     province: 'Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 80,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 80 },
+      down: { status: 'green', timer: 80 },
+      left: { status: 'red', timer: 80 },
+      right: { status: 'red', timer: 80 }
     }
   },
   dehiwala: {
@@ -299,24 +299,24 @@ const trafficLights = {
     city: 'Mount Lavinia',
     province: 'Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 65,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 65 },
+      down: { status: 'red', timer: 65 },
+      left: { status: 'green', timer: 65 },
+      right: { status: 'green', timer: 65 }
     }
   },
   chilaw: {
     city: 'Chilaw',
     province: 'North Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 75,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 75 },
+      down: { status: 'green', timer: 75 },
+      left: { status: 'red', timer: 75 },
+      right: { status: 'red', timer: 75 }
     }
   },
   puttalam: {
@@ -335,24 +335,24 @@ const trafficLights = {
     city: 'Homagama',
     province: 'Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 70,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 70 },
+      down: { status: 'red', timer: 70 },
+      left: { status: 'green', timer: 70 },
+      right: { status: 'green', timer: 70 }
     }
   },
   maharagama: {
     city: 'Maharagama',
     province: 'Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 85,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 85 },
+      down: { status: 'green', timer: 85 },
+      left: { status: 'red', timer: 85 },
+      right: { status: 'red', timer: 85 }
     }
   }
 };
@@ -557,17 +557,18 @@ function updateTrafficLights() {
           
         case 'vertical-yellow':
           newPhase = 'horizontal-green';
-          newTimer = 60;
+          // Different timers for different cities (already set in config)
+          newTimer = cityLights.phaseTimer < 0 ? 60 : cityLights.phaseTimer;
           
           // STRICT: Vertical -> RED, Horizontal -> GREEN
           cityLights.directions.up.status = 'red';
-          cityLights.directions.up.timer = 60;
+          cityLights.directions.up.timer = newTimer;
           cityLights.directions.down.status = 'red';
-          cityLights.directions.down.timer = 60;
+          cityLights.directions.down.timer = newTimer;
           cityLights.directions.left.status = 'green';
-          cityLights.directions.left.timer = 60;
+          cityLights.directions.left.timer = newTimer;
           cityLights.directions.right.status = 'green';
-          cityLights.directions.right.timer = 60;
+          cityLights.directions.right.timer = newTimer;
           break;
           
         case 'horizontal-green':
@@ -586,17 +587,18 @@ function updateTrafficLights() {
           
         case 'horizontal-yellow':
           newPhase = 'vertical-green';
-          newTimer = 60;
+          // Different timers for different cities (already set in config)
+          newTimer = cityLights.phaseTimer < 0 ? 60 : cityLights.phaseTimer;
           
           // STRICT: Horizontal -> RED, Vertical -> GREEN
           cityLights.directions.left.status = 'red';
-          cityLights.directions.left.timer = 60;
+          cityLights.directions.left.timer = newTimer;
           cityLights.directions.right.status = 'red';
-          cityLights.directions.right.timer = 60;
+          cityLights.directions.right.timer = newTimer;
           cityLights.directions.up.status = 'green';
-          cityLights.directions.up.timer = 60;
+          cityLights.directions.up.timer = newTimer;
           cityLights.directions.down.status = 'green';
-          cityLights.directions.down.timer = 60;
+          cityLights.directions.down.timer = newTimer;
           break;
           
         default:
