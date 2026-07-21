@@ -1,6 +1,10 @@
 // Emergency overrides storage
 let emergencyOverrides = {};
 
+// Store original timers and statuses for emergency recovery
+const ORIGINAL_TIMERS = {};
+const ORIGINAL_STATUSES = {};
+
 // Traffic light state management for all Sri Lankan cities with directional controls
 // Each city has independent traffic lights for each direction
 const trafficLights = {
@@ -113,7 +117,6 @@ const trafficLights = {
   },
   
   // ============ KURUNEGALA - 5 INTERSECTIONS ============
-  // Each intersection has full directional control
   kurunegala_1: {
     city: 'Kurunegala - Main',
     province: 'North Western',
@@ -346,6 +349,26 @@ const trafficLights = {
   }
 };
 
+// Initialize original timers and statuses for emergency recovery
+function initializeOriginalStates() {
+  Object.keys(trafficLights).forEach(location => {
+    if (!ORIGINAL_TIMERS[location]) ORIGINAL_TIMERS[location] = {};
+    if (!ORIGINAL_STATUSES[location]) ORIGINAL_STATUSES[location] = {};
+    
+    const directions = ['up', 'down', 'left', 'right'];
+    directions.forEach(dir => {
+      const light = trafficLights[location].directions[dir];
+      if (light) {
+        ORIGINAL_TIMERS[location][dir] = light.timer;
+        ORIGINAL_STATUSES[location][dir] = light.status;
+      }
+    });
+  });
+}
+
+// Call initialization
+initializeOriginalStates();
+
 // Helper function to get all direction statuses for a city
 function getCityDirections(location) {
   if (!trafficLights[location]) return null;
@@ -368,6 +391,27 @@ function setDirectionStatus(location, direction, status, timer) {
   if (timer !== undefined) {
     trafficLights[location].directions[direction].timer = timer;
   }
+  return true;
+}
+
+// Helper function to reset a city's directions to original state (for emergency recovery)
+function resetCityToOriginalState(location) {
+  if (!trafficLights[location]) return false;
+  if (!ORIGINAL_STATUSES[location]) return false;
+  
+  const directions = ['up', 'down', 'left', 'right'];
+  directions.forEach(dir => {
+    if (trafficLights[location].directions[dir]) {
+      // Restore original status
+      const originalStatus = ORIGINAL_STATUSES[location][dir] || 'green';
+      trafficLights[location].directions[dir].status = originalStatus;
+      
+      // Restore original timer
+      const originalTimer = ORIGINAL_TIMERS[location][dir] || 30;
+      trafficLights[location].directions[dir].timer = originalTimer;
+    }
+  });
+  
   return true;
 }
 
@@ -443,31 +487,62 @@ function broadcastUpdate(data) {
   });
 }
 
-// Update traffic lights with directional control
+// Update traffic lights with directional control - FIXED VERSION
 function updateTrafficLights() {
   const locations = Object.keys(trafficLights);
   const changes = [];
   
   // Check for expired emergency overrides
   const now = Date.now();
+  const expiredLocations = [];
+  
   Object.keys(emergencyOverrides).forEach(location => {
     const override = emergencyOverrides[location];
     if (new Date(override.expires).getTime() < now) {
-      delete emergencyOverrides[location];
-      if (trafficLights[location]) {
-        // Reset all directions to green with default timers
-        const directions = ['up', 'down', 'left', 'right'];
-        directions.forEach(dir => {
-          if (trafficLights[location].directions[dir]) {
-            trafficLights[location].directions[dir].status = 'green';
-            trafficLights[location].directions[dir].timer = 60;
-          }
-        });
-      }
+      expiredLocations.push(location);
     }
   });
   
+  // Process expired emergency overrides
+  expiredLocations.forEach(location => {
+    delete emergencyOverrides[location];
+    
+    // Reset to original state (not just green)
+    if (trafficLights[location]) {
+      resetCityToOriginalState(location);
+      
+      // Broadcast that emergency has ended
+      broadcastUpdate({
+        type: 'emergencyStopped',
+        location: location,
+        city: trafficLights[location].city,
+        province: trafficLights[location].province,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Record change for all directions
+      const directions = ['up', 'down', 'left', 'right'];
+      directions.forEach(dir => {
+        const light = trafficLights[location].directions[dir];
+        if (light) {
+          changes.push({
+            location: location,
+            direction: dir,
+            oldStatus: 'emergency',
+            newStatus: light.status,
+            timer: light.timer,
+            city: trafficLights[location].city,
+            province: trafficLights[location].province,
+            isEmergencyEnd: true
+          });
+        }
+      });
+    }
+  });
+  
+  // Update each direction independently
   locations.forEach(location => {
+    // Skip if emergency override is active
     if (emergencyOverrides[location]) return;
     
     const cityLights = trafficLights[location];
@@ -477,10 +552,13 @@ function updateTrafficLights() {
       const light = cityLights.directions[direction];
       if (!light) return;
       
+      // Only decrement timer if not in emergency
       light.timer -= 1;
       
       if (light.timer <= 0) {
         const oldStatus = light.status;
+        
+        // Normal traffic light cycle
         if (light.status === 'green') {
           light.status = 'yellow';
           light.timer = 5;
@@ -505,6 +583,7 @@ function updateTrafficLights() {
     });
   });
   
+  // Broadcast changes if any
   if (changes.length > 0) {
     broadcastUpdate({
       type: 'statusChange',
@@ -588,7 +667,12 @@ function updateIotData() {
 function calculateStats() {
   const total = Object.keys(trafficLights).length;
   const statusCounts = { red: 0, yellow: 0, green: 0 };
-  const directionCounts = { up: { red: 0, yellow: 0, green: 0 }, down: { red: 0, yellow: 0, green: 0 }, left: { red: 0, yellow: 0, green: 0 }, right: { red: 0, yellow: 0, green: 0 } };
+  const directionCounts = { 
+    up: { red: 0, yellow: 0, green: 0 }, 
+    down: { red: 0, yellow: 0, green: 0 }, 
+    left: { red: 0, yellow: 0, green: 0 }, 
+    right: { red: 0, yellow: 0, green: 0 } 
+  };
   const provinceStats = {};
   
   Object.keys(trafficLights).forEach(key => {
@@ -622,6 +706,7 @@ function calculateStats() {
     statusDistribution: statusCounts,
     directionCounts: directionCounts,
     provinceStats: provinceStats,
+    activeEmergencyOverrides: Object.keys(emergencyOverrides).length,
     timestamp: new Date().toISOString()
   };
 }
@@ -637,5 +722,6 @@ module.exports = {
   getCityDirections,
   getDirectionStatus,
   setDirectionStatus,
+  resetCityToOriginalState,
   calculateStats
 };
