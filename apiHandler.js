@@ -3,8 +3,33 @@ const { trafficLights, iotData, emergencyOverrides, broadcastUpdate } = require(
 function handleApiRequest(req, res, url) {
   const pathname = url.pathname;
 
-  // Health check
+  // ============================================
+  // CORS HANDLING - OPTIONS Preflight
+  // ============================================
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With, Accept',
+      'Access-Control-Max-Age': '86400'
+    });
+    res.end();
+    return;
+  }
+
+  // Helper function to set CORS headers
+  function setCorsHeaders(res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Type');
+  }
+
+  // ============================================
+  // HEALTH CHECK
+  // ============================================
   if (pathname === '/api/health') {
+    setCorsHeaders(res);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ 
       status: 'ok', 
@@ -32,6 +57,7 @@ function handleApiRequest(req, res, url) {
     });
 
     req.on('end', () => {
+      setCorsHeaders(res);
       try {
         const data = JSON.parse(body);
         const { city, status } = data;
@@ -123,6 +149,7 @@ function handleApiRequest(req, res, url) {
 
   // Get traffic light status by city name
   if (pathname === '/api/trafficlight' && req.method === 'GET') {
+    setCorsHeaders(res);
     const city = url.searchParams.get('city');
     
     if (city) {
@@ -182,6 +209,7 @@ function handleApiRequest(req, res, url) {
     });
 
     req.on('end', () => {
+      setCorsHeaders(res);
       try {
         const data = JSON.parse(body);
         const { updates } = data;
@@ -291,6 +319,7 @@ function handleApiRequest(req, res, url) {
   
   // Get all city names and their status
   if (pathname === '/api/cities' && req.method === 'GET') {
+    setCorsHeaders(res);
     const cities = Object.keys(trafficLights).map(key => ({
       id: key,
       city: trafficLights[key].city,
@@ -318,10 +347,11 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
-  // ==================== EXISTING API ENDPOINTS ====================
+  // ==================== IOT ENDPOINTS ====================
 
   // Get IoT data
   if (pathname === '/api/iot' && req.method === 'GET') {
+    setCorsHeaders(res);
     const category = url.searchParams.get('category');
     let data = iotData;
     
@@ -339,6 +369,7 @@ function handleApiRequest(req, res, url) {
 
   // Get cameras
   if (pathname === '/api/iot/cameras' && req.method === 'GET') {
+    setCorsHeaders(res);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       cameras: iotData.cameras,
@@ -350,6 +381,7 @@ function handleApiRequest(req, res, url) {
 
   // Get inductive loops
   if (pathname === '/api/iot/loops' && req.method === 'GET') {
+    setCorsHeaders(res);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       loops: iotData.inductiveLoops,
@@ -361,6 +393,7 @@ function handleApiRequest(req, res, url) {
 
   // Get air quality
   if (pathname === '/api/iot/airquality' && req.method === 'GET') {
+    setCorsHeaders(res);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       airQuality: iotData.airQuality,
@@ -372,6 +405,7 @@ function handleApiRequest(req, res, url) {
 
   // Get fleet
   if (pathname === '/api/iot/fleet' && req.method === 'GET') {
+    setCorsHeaders(res);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       fleet: iotData.fleet,
@@ -381,8 +415,11 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
+  // ==================== EMERGENCY ENDPOINTS ====================
+
   // Get emergency overrides
   if (pathname === '/api/emergency/overrides' && req.method === 'GET') {
+    setCorsHeaders(res);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       overrides: emergencyOverrides,
@@ -400,6 +437,7 @@ function handleApiRequest(req, res, url) {
     });
 
     req.on('end', () => {
+      setCorsHeaders(res);
       try {
         const data = JSON.parse(body);
         const { location, duration } = data;
@@ -442,6 +480,7 @@ function handleApiRequest(req, res, url) {
           timestamp: new Date().toISOString()
         }));
       } catch (error) {
+        console.error('Emergency green error:', error);
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ 
           error: 'Invalid request',
@@ -460,6 +499,7 @@ function handleApiRequest(req, res, url) {
     });
 
     req.on('end', () => {
+      setCorsHeaders(res);
       try {
         const data = JSON.parse(body);
         const { location, duration } = data;
@@ -502,6 +542,7 @@ function handleApiRequest(req, res, url) {
           timestamp: new Date().toISOString()
         }));
       } catch (error) {
+        console.error('Emergency red error:', error);
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ 
           error: 'Invalid request',
@@ -512,8 +553,11 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
+  // ==================== TRAFFIC LIGHTS ENDPOINTS ====================
+
   // Get all traffic lights
   if (pathname === '/api/traffic-lights' && req.method === 'GET') {
+    setCorsHeaders(res);
     const province = url.searchParams.get('province');
     const status = url.searchParams.get('status');
     let data = trafficLights;
@@ -551,6 +595,7 @@ function handleApiRequest(req, res, url) {
 
   // Get provinces
   if (pathname === '/api/provinces' && req.method === 'GET') {
+    setCorsHeaders(res);
     const provinces = {};
     Object.keys(trafficLights).forEach(key => {
       const province = trafficLights[key].province;
@@ -575,6 +620,7 @@ function handleApiRequest(req, res, url) {
 
   // Get specific traffic light
   if (pathname.startsWith('/api/traffic-lights/') && req.method === 'GET') {
+    setCorsHeaders(res);
     const location = pathname.split('/')[3];
     if (trafficLights[location]) {
       res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -595,6 +641,7 @@ function handleApiRequest(req, res, url) {
 
   // Get cities by status
   if (pathname === '/api/traffic-lights/status' && req.method === 'GET') {
+    setCorsHeaders(res);
     const status = url.searchParams.get('status');
     if (status && ['red', 'yellow', 'green'].includes(status)) {
       const filtered = {};
@@ -622,6 +669,7 @@ function handleApiRequest(req, res, url) {
 
   // Get statistics
   if (pathname === '/api/stats' && req.method === 'GET') {
+    setCorsHeaders(res);
     const stats = calculateStats();
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
@@ -648,6 +696,7 @@ function handleApiRequest(req, res, url) {
     });
     
     req.on('end', () => {
+      setCorsHeaders(res);
       try {
         const updates = JSON.parse(body);
         if (trafficLights[location]) {
@@ -699,6 +748,7 @@ function handleApiRequest(req, res, url) {
     });
     
     req.on('end', () => {
+      setCorsHeaders(res);
       try {
         const updates = JSON.parse(body);
         const results = {};
@@ -743,7 +793,8 @@ function handleApiRequest(req, res, url) {
     return;
   }
 
-  // 404 for API
+  // ==================== 404 ====================
+  setCorsHeaders(res);
   res.writeHead(404, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify({
     error: 'API endpoint not found',
