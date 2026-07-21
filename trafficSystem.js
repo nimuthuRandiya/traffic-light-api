@@ -14,9 +14,9 @@ const trafficLights = {
     province: 'Western',
     directions: {
       up: { status: 'green', timer: 60 },
-      down: { status: 'red', timer: 30 },
-      left: { status: 'green', timer: 45 },
-      right: { status: 'red', timer: 35 }
+      down: { status: 'green', timer: 60 },
+      left: { status: 'red', timer: 30 },
+      right: { status: 'red', timer: 30 }
     }
   },
   
@@ -26,9 +26,9 @@ const trafficLights = {
     province: 'Central',
     directions: {
       up: { status: 'red', timer: 30 },
-      down: { status: 'green', timer: 50 },
-      left: { status: 'yellow', timer: 5 },
-      right: { status: 'red', timer: 25 }
+      down: { status: 'red', timer: 30 },
+      left: { status: 'green', timer: 50 },
+      right: { status: 'green', timer: 50 }
     }
   },
   
@@ -38,9 +38,9 @@ const trafficLights = {
     province: 'Southern',
     directions: {
       up: { status: 'yellow', timer: 5 },
-      down: { status: 'red', timer: 35 },
+      down: { status: 'yellow', timer: 5 },
       left: { status: 'green', timer: 55 },
-      right: { status: 'yellow', timer: 8 }
+      right: { status: 'green', timer: 55 }
     }
   },
   
@@ -50,9 +50,9 @@ const trafficLights = {
     province: 'Western',
     directions: {
       up: { status: 'green', timer: 45 },
-      down: { status: 'yellow', timer: 7 },
+      down: { status: 'green', timer: 45 },
       left: { status: 'red', timer: 32 },
-      right: { status: 'green', timer: 42 }
+      right: { status: 'red', timer: 32 }
     }
   },
   
@@ -62,9 +62,9 @@ const trafficLights = {
     province: 'Northern',
     directions: {
       up: { status: 'red', timer: 35 },
-      down: { status: 'green', timer: 48 },
-      left: { status: 'yellow', timer: 6 },
-      right: { status: 'red', timer: 28 }
+      down: { status: 'red', timer: 35 },
+      left: { status: 'green', timer: 48 },
+      right: { status: 'green', timer: 48 }
     }
   },
   
@@ -74,9 +74,9 @@ const trafficLights = {
     province: 'North Central',
     directions: {
       up: { status: 'green', timer: 50 },
-      down: { status: 'red', timer: 30 },
-      left: { status: 'yellow', timer: 8 },
-      right: { status: 'green', timer: 40 }
+      down: { status: 'green', timer: 50 },
+      left: { status: 'red', timer: 30 },
+      right: { status: 'red', timer: 30 }
     }
   },
   
@@ -86,9 +86,9 @@ const trafficLights = {
     province: 'North Central',
     directions: {
       up: { status: 'yellow', timer: 8 },
-      down: { status: 'green', timer: 45 },
-      left: { status: 'red', timer: 35 },
-      right: { status: 'yellow', timer: 6 }
+      down: { status: 'yellow', timer: 8 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   
@@ -98,9 +98,9 @@ const trafficLights = {
     province: 'Uva',
     directions: {
       up: { status: 'red', timer: 25 },
-      down: { status: 'yellow', timer: 7 },
+      down: { status: 'red', timer: 25 },
       left: { status: 'green', timer: 52 },
-      right: { status: 'red', timer: 30 }
+      right: { status: 'green', timer: 52 }
     }
   },
   
@@ -110,9 +110,9 @@ const trafficLights = {
     province: 'Sabaragamuwa',
     directions: {
       up: { status: 'green', timer: 55 },
-      down: { status: 'red', timer: 32 },
-      left: { status: 'yellow', timer: 9 },
-      right: { status: 'green', timer: 38 }
+      down: { status: 'green', timer: 55 },
+      left: { status: 'red', timer: 32 },
+      right: { status: 'red', timer: 32 }
     }
   },
   
@@ -122,9 +122,9 @@ const trafficLights = {
     province: 'North Western',
     directions: {
       up: { status: 'green', timer: 45 },
-      down: { status: 'red', timer: 30 },
-      left: { status: 'yellow', timer: 8 },
-      right: { status: 'green', timer: 40 }
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 30 },
+      right: { status: 'red', timer: 30 }
     }
   },
   kurunegala_2: {
@@ -132,9 +132,9 @@ const trafficLights = {
     province: 'North Western',
     directions: {
       up: { status: 'red', timer: 30 },
-      down: { status: 'green', timer: 50 },
-      left: { status: 'yellow', timer: 6 },
-      right: { status: 'red', timer: 28 }
+      down: { status: 'red', timer: 30 },
+      left: { status: 'green', timer: 50 },
+      right: { status: 'green', timer: 50 }
     }
   },
   kurunegala_3: {
@@ -142,9 +142,9 @@ const trafficLights = {
     province: 'North Western',
     directions: {
       up: { status: 'yellow', timer: 8 },
-      down: { status: 'red', timer: 35 },
+      down: { status: 'yellow', timer: 8 },
       left: { status: 'green', timer: 48 },
-      right: { status: 'yellow', timer: 7 }
+      right: { status: 'green', timer: 48 }
     }
   },
   kurunegala_4: {
@@ -152,9 +152,9 @@ const trafficLights = {
     province: 'North Western',
     directions: {
       up: { status: 'green', timer: 50 },
-      down: { status: 'yellow', timer: 9 },
+      down: { status: 'green', timer: 50 },
       left: { status: 'red', timer: 32 },
-      right: { status: 'green', timer: 42 }
+      right: { status: 'red', timer: 32 }
     }
   },
   kurunegala_5: {
@@ -162,9 +162,9 @@ const trafficLights = {
     province: 'North Western',
     directions: {
       up: { status: 'red', timer: 35 },
-      down: { status: 'green', timer: 45 },
-      left: { status: 'yellow', timer: 7 },
-      right: { status: 'red', timer: 30 }
+      down: { status: 'red', timer: 35 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   
@@ -174,9 +174,9 @@ const trafficLights = {
     province: 'Southern',
     directions: {
       up: { status: 'red', timer: 40 },
-      down: { status: 'green', timer: 55 },
-      left: { status: 'yellow', timer: 8 },
-      right: { status: 'red', timer: 30 }
+      down: { status: 'red', timer: 40 },
+      left: { status: 'green', timer: 55 },
+      right: { status: 'green', timer: 55 }
     }
   },
   
@@ -186,9 +186,9 @@ const trafficLights = {
     province: 'Eastern',
     directions: {
       up: { status: 'green', timer: 48 },
-      down: { status: 'red', timer: 30 },
-      left: { status: 'yellow', timer: 6 },
-      right: { status: 'green', timer: 42 }
+      down: { status: 'green', timer: 48 },
+      left: { status: 'red', timer: 30 },
+      right: { status: 'red', timer: 30 }
     }
   },
   
@@ -198,9 +198,9 @@ const trafficLights = {
     province: 'Eastern',
     directions: {
       up: { status: 'yellow', timer: 7 },
-      down: { status: 'green', timer: 50 },
-      left: { status: 'red', timer: 28 },
-      right: { status: 'yellow', timer: 8 }
+      down: { status: 'yellow', timer: 7 },
+      left: { status: 'green', timer: 50 },
+      right: { status: 'green', timer: 50 }
     }
   },
   
@@ -210,9 +210,9 @@ const trafficLights = {
     province: 'Western',
     directions: {
       up: { status: 'red', timer: 32 },
-      down: { status: 'yellow', timer: 8 },
+      down: { status: 'red', timer: 32 },
       left: { status: 'green', timer: 52 },
-      right: { status: 'red', timer: 30 }
+      right: { status: 'green', timer: 52 }
     }
   },
   
@@ -222,9 +222,9 @@ const trafficLights = {
     province: 'Western',
     directions: {
       up: { status: 'green', timer: 42 },
-      down: { status: 'red', timer: 35 },
-      left: { status: 'yellow', timer: 7 },
-      right: { status: 'green', timer: 38 }
+      down: { status: 'green', timer: 42 },
+      left: { status: 'red', timer: 35 },
+      right: { status: 'red', timer: 35 }
     }
   },
   
@@ -234,9 +234,9 @@ const trafficLights = {
     province: 'Western',
     directions: {
       up: { status: 'yellow', timer: 9 },
-      down: { status: 'green', timer: 48 },
-      left: { status: 'red', timer: 30 },
-      right: { status: 'yellow', timer: 6 }
+      down: { status: 'yellow', timer: 9 },
+      left: { status: 'green', timer: 48 },
+      right: { status: 'green', timer: 48 }
     }
   },
   
@@ -246,9 +246,9 @@ const trafficLights = {
     province: 'Central',
     directions: {
       up: { status: 'green', timer: 38 },
-      down: { status: 'red', timer: 32 },
-      left: { status: 'yellow', timer: 8 },
-      right: { status: 'green', timer: 44 }
+      down: { status: 'green', timer: 38 },
+      left: { status: 'red', timer: 32 },
+      right: { status: 'red', timer: 32 }
     }
   },
   
@@ -258,9 +258,9 @@ const trafficLights = {
     province: 'Western',
     directions: {
       up: { status: 'red', timer: 28 },
-      down: { status: 'green', timer: 52 },
-      left: { status: 'yellow', timer: 7 },
-      right: { status: 'red', timer: 30 }
+      down: { status: 'red', timer: 28 },
+      left: { status: 'green', timer: 52 },
+      right: { status: 'green', timer: 52 }
     }
   },
   
@@ -270,9 +270,9 @@ const trafficLights = {
     province: 'Western',
     directions: {
       up: { status: 'green', timer: 52 },
-      down: { status: 'red', timer: 30 },
-      left: { status: 'yellow', timer: 9 },
-      right: { status: 'green', timer: 40 }
+      down: { status: 'green', timer: 52 },
+      left: { status: 'red', timer: 30 },
+      right: { status: 'red', timer: 30 }
     }
   },
   
@@ -282,9 +282,9 @@ const trafficLights = {
     province: 'Western',
     directions: {
       up: { status: 'yellow', timer: 10 },
-      down: { status: 'green', timer: 45 },
-      left: { status: 'red', timer: 28 },
-      right: { status: 'yellow', timer: 7 }
+      down: { status: 'yellow', timer: 10 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   
@@ -294,9 +294,9 @@ const trafficLights = {
     province: 'Western',
     directions: {
       up: { status: 'red', timer: 33 },
-      down: { status: 'yellow', timer: 8 },
+      down: { status: 'red', timer: 33 },
       left: { status: 'green', timer: 48 },
-      right: { status: 'red', timer: 30 }
+      right: { status: 'green', timer: 48 }
     }
   },
   
@@ -306,9 +306,9 @@ const trafficLights = {
     province: 'North Western',
     directions: {
       up: { status: 'green', timer: 44 },
-      down: { status: 'red', timer: 30 },
-      left: { status: 'yellow', timer: 7 },
-      right: { status: 'green', timer: 38 }
+      down: { status: 'green', timer: 44 },
+      left: { status: 'red', timer: 30 },
+      right: { status: 'red', timer: 30 }
     }
   },
   
@@ -318,9 +318,9 @@ const trafficLights = {
     province: 'North Western',
     directions: {
       up: { status: 'yellow', timer: 7 },
-      down: { status: 'green', timer: 50 },
-      left: { status: 'red', timer: 28 },
-      right: { status: 'yellow', timer: 8 }
+      down: { status: 'yellow', timer: 7 },
+      left: { status: 'green', timer: 50 },
+      right: { status: 'green', timer: 50 }
     }
   },
   
@@ -330,9 +330,9 @@ const trafficLights = {
     province: 'Western',
     directions: {
       up: { status: 'red', timer: 36 },
-      down: { status: 'green', timer: 48 },
-      left: { status: 'yellow', timer: 8 },
-      right: { status: 'red', timer: 30 }
+      down: { status: 'red', timer: 36 },
+      left: { status: 'green', timer: 48 },
+      right: { status: 'green', timer: 48 }
     }
   },
   
@@ -342,9 +342,9 @@ const trafficLights = {
     province: 'Western',
     directions: {
       up: { status: 'green', timer: 49 },
-      down: { status: 'red', timer: 30 },
-      left: { status: 'yellow', timer: 9 },
-      right: { status: 'green', timer: 40 }
+      down: { status: 'green', timer: 49 },
+      left: { status: 'red', timer: 30 },
+      right: { status: 'red', timer: 30 }
     }
   }
 };
@@ -394,6 +394,31 @@ function setDirectionStatus(location, direction, status, timer) {
   return true;
 }
 
+// Helper function to set paired directions (Up + Down or Left + Right)
+function setPairedDirections(location, pair, status, timer) {
+  if (!trafficLights[location]) return false;
+  
+  let dirs = [];
+  if (pair === 'vertical') {
+    dirs = ['up', 'down'];
+  } else if (pair === 'horizontal') {
+    dirs = ['left', 'right'];
+  } else {
+    return false;
+  }
+  
+  dirs.forEach(dir => {
+    if (trafficLights[location].directions[dir]) {
+      trafficLights[location].directions[dir].status = status;
+      if (timer !== undefined) {
+        trafficLights[location].directions[dir].timer = timer;
+      }
+    }
+  });
+  
+  return true;
+}
+
 // Helper function to reset a city's directions to original state (for emergency recovery)
 function resetCityToOriginalState(location) {
   if (!trafficLights[location]) return false;
@@ -413,6 +438,32 @@ function resetCityToOriginalState(location) {
   });
   
   return true;
+}
+
+// Get the current state of a pair (vertical or horizontal)
+function getPairStatus(location, pair) {
+  if (!trafficLights[location]) return null;
+  
+  let dirs = [];
+  if (pair === 'vertical') {
+    dirs = ['up', 'down'];
+  } else if (pair === 'horizontal') {
+    dirs = ['left', 'right'];
+  } else {
+    return null;
+  }
+  
+  const statuses = [];
+  dirs.forEach(dir => {
+    if (trafficLights[location].directions[dir]) {
+      statuses.push(trafficLights[location].directions[dir].status);
+    }
+  });
+  
+  // Return the first status if all are the same, otherwise return 'mixed'
+  if (statuses.length === 0) return null;
+  const allSame = statuses.every(s => s === statuses[0]);
+  return allSame ? statuses[0] : 'mixed';
 }
 
 // IoT Sensors Data
@@ -487,7 +538,7 @@ function broadcastUpdate(data) {
   });
 }
 
-// Update traffic lights with directional control - FIXED VERSION
+// Update traffic lights with proper paired directional control - FIXED VERSION
 function updateTrafficLights() {
   const locations = Object.keys(trafficLights);
   const changes = [];
@@ -507,7 +558,7 @@ function updateTrafficLights() {
   expiredLocations.forEach(location => {
     delete emergencyOverrides[location];
     
-    // Reset to original state (not just green)
+    // Reset to original state
     if (trafficLights[location]) {
       resetCityToOriginalState(location);
       
@@ -540,47 +591,183 @@ function updateTrafficLights() {
     }
   });
   
-  // Update each direction independently
+  // Update each location's paired directions
   locations.forEach(location => {
     // Skip if emergency override is active
     if (emergencyOverrides[location]) return;
     
     const cityLights = trafficLights[location];
-    const directions = ['up', 'down', 'left', 'right'];
     
-    directions.forEach(direction => {
-      const light = cityLights.directions[direction];
-      if (!light) return;
+    // Get the current status of vertical pair (up + down)
+    const verticalStatus = cityLights.directions.up ? cityLights.directions.up.status : 'green';
+    const verticalTimer = cityLights.directions.up ? cityLights.directions.up.timer : 60;
+    
+    // Get the current status of horizontal pair (left + right)
+    const horizontalStatus = cityLights.directions.left ? cityLights.directions.left.status : 'red';
+    const horizontalTimer = cityLights.directions.left ? cityLights.directions.left.timer : 30;
+    
+    // Determine which pair is active (green) and which is inactive
+    // Vertical pair (up + down) controls North/South traffic
+    // Horizontal pair (left + right) controls East/West traffic
+    
+    // Check if vertical pair timer has expired (using up direction timer)
+    if (cityLights.directions.up) {
+      cityLights.directions.up.timer -= 1;
+      cityLights.directions.down.timer -= 1;
       
-      // Only decrement timer if not in emergency
-      light.timer -= 1;
-      
-      if (light.timer <= 0) {
-        const oldStatus = light.status;
+      if (cityLights.directions.up.timer <= 0) {
+        // Vertical pair timer expired - switch
+        const oldVerticalStatus = cityLights.directions.up.status;
         
-        // Normal traffic light cycle
-        if (light.status === 'green') {
-          light.status = 'yellow';
-          light.timer = 5;
-        } else if (light.status === 'yellow') {
-          light.status = 'red';
-          light.timer = 30;
-        } else if (light.status === 'red') {
-          light.status = 'green';
-          light.timer = 60;
+        if (cityLights.directions.up.status === 'green') {
+          // Green -> Yellow for vertical
+          cityLights.directions.up.status = 'yellow';
+          cityLights.directions.up.timer = 5;
+          cityLights.directions.down.status = 'yellow';
+          cityLights.directions.down.timer = 5;
+          
+          // Horizontal stays red
+          if (cityLights.directions.left && cityLights.directions.left.status !== 'red') {
+            cityLights.directions.left.status = 'red';
+            cityLights.directions.left.timer = 30;
+            cityLights.directions.right.status = 'red';
+            cityLights.directions.right.timer = 30;
+          }
+          
+          changes.push({
+            location: location,
+            direction: 'vertical',
+            oldStatus: 'green',
+            newStatus: 'yellow',
+            timer: 5,
+            city: cityLights.city,
+            province: cityLights.province
+          });
+          
+        } else if (cityLights.directions.up.status === 'yellow') {
+          // Yellow -> Red for vertical, Green for horizontal
+          cityLights.directions.up.status = 'red';
+          cityLights.directions.up.timer = 30;
+          cityLights.directions.down.status = 'red';
+          cityLights.directions.down.timer = 30;
+          
+          cityLights.directions.left.status = 'green';
+          cityLights.directions.left.timer = 60;
+          cityLights.directions.right.status = 'green';
+          cityLights.directions.right.timer = 60;
+          
+          changes.push({
+            location: location,
+            direction: 'vertical',
+            oldStatus: 'yellow',
+            newStatus: 'red',
+            timer: 30,
+            city: cityLights.city,
+            province: cityLights.province
+          });
+          changes.push({
+            location: location,
+            direction: 'horizontal',
+            oldStatus: 'red',
+            newStatus: 'green',
+            timer: 60,
+            city: cityLights.city,
+            province: cityLights.province
+          });
+          
+        } else if (cityLights.directions.up.status === 'red') {
+          // Red -> Green for vertical (should not happen here, handled by horizontal)
+          // This is a safety fallback
+          cityLights.directions.up.status = 'green';
+          cityLights.directions.up.timer = 60;
+          cityLights.directions.down.status = 'green';
+          cityLights.directions.down.timer = 60;
+          
+          cityLights.directions.left.status = 'red';
+          cityLights.directions.left.timer = 30;
+          cityLights.directions.right.status = 'red';
+          cityLights.directions.right.timer = 30;
+          
+          changes.push({
+            location: location,
+            direction: 'vertical',
+            oldStatus: 'red',
+            newStatus: 'green',
+            timer: 60,
+            city: cityLights.city,
+            province: cityLights.province
+          });
         }
-        
-        changes.push({
-          location: location,
-          direction: direction,
-          oldStatus: oldStatus,
-          newStatus: light.status,
-          timer: light.timer,
-          city: cityLights.city,
-          province: cityLights.province
-        });
       }
-    });
+    }
+    
+    // Check if horizontal pair timer has expired (using left direction timer)
+    if (cityLights.directions.left && cityLights.directions.left.status === 'green') {
+      cityLights.directions.left.timer -= 1;
+      cityLights.directions.right.timer -= 1;
+      
+      if (cityLights.directions.left.timer <= 0) {
+        // Horizontal pair timer expired - switch
+        const oldHorizontalStatus = cityLights.directions.left.status;
+        
+        if (cityLights.directions.left.status === 'green') {
+          // Green -> Yellow for horizontal
+          cityLights.directions.left.status = 'yellow';
+          cityLights.directions.left.timer = 5;
+          cityLights.directions.right.status = 'yellow';
+          cityLights.directions.right.timer = 5;
+          
+          // Vertical stays red
+          if (cityLights.directions.up && cityLights.directions.up.status !== 'red') {
+            cityLights.directions.up.status = 'red';
+            cityLights.directions.up.timer = 30;
+            cityLights.directions.down.status = 'red';
+            cityLights.directions.down.timer = 30;
+          }
+          
+          changes.push({
+            location: location,
+            direction: 'horizontal',
+            oldStatus: 'green',
+            newStatus: 'yellow',
+            timer: 5,
+            city: cityLights.city,
+            province: cityLights.province
+          });
+          
+        } else if (cityLights.directions.left.status === 'yellow') {
+          // Yellow -> Red for horizontal, Green for vertical
+          cityLights.directions.left.status = 'red';
+          cityLights.directions.left.timer = 30;
+          cityLights.directions.right.status = 'red';
+          cityLights.directions.right.timer = 30;
+          
+          cityLights.directions.up.status = 'green';
+          cityLights.directions.up.timer = 60;
+          cityLights.directions.down.status = 'green';
+          cityLights.directions.down.timer = 60;
+          
+          changes.push({
+            location: location,
+            direction: 'horizontal',
+            oldStatus: 'yellow',
+            newStatus: 'red',
+            timer: 30,
+            city: cityLights.city,
+            province: cityLights.province
+          });
+          changes.push({
+            location: location,
+            direction: 'vertical',
+            oldStatus: 'red',
+            newStatus: 'green',
+            timer: 60,
+            city: cityLights.city,
+            province: cityLights.province
+          });
+        }
+      }
+    }
   });
   
   // Broadcast changes if any
@@ -722,6 +909,8 @@ module.exports = {
   getCityDirections,
   getDirectionStatus,
   setDirectionStatus,
+  setPairedDirections,
+  getPairStatus,
   resetCityToOriginalState,
   calculateStats
 };
