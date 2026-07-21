@@ -1,38 +1,375 @@
 // Emergency overrides storage
 let emergencyOverrides = {};
 
-// Traffic light state management for all Sri Lankan cities
+// Traffic light state management for all Sri Lankan cities with directional controls
+// Each city has independent traffic lights for each direction
 const trafficLights = {
-  colombo: { status: 'green', timer: 60, city: 'Colombo', province: 'Western' },
-  kandy: { status: 'red', timer: 30, city: 'Kandy', province: 'Central' },
-  galle: { status: 'yellow', timer: 5, city: 'Galle', province: 'Southern' },
-  negombo: { status: 'green', timer: 45, city: 'Negombo', province: 'Western' },
-  jaffna: { status: 'red', timer: 35, city: 'Jaffna', province: 'Northern' },
-  anuradhapura: { status: 'green', timer: 50, city: 'Anuradhapura', province: 'North Central' },
-  polonnaruwa: { status: 'yellow', timer: 8, city: 'Polonnaruwa', province: 'North Central' },
-  badulla: { status: 'red', timer: 25, city: 'Badulla', province: 'Uva' },
-  ratnapura: { status: 'green', timer: 55, city: 'Ratnapura', province: 'Sabaragamuwa' },
-  kurunegala_1: { status: 'green', timer: 45, city: 'Kurunegala - Main', province: 'North Western' },
-  kurunegala_2: { status: 'red', timer: 30, city: 'Kurunegala - Town Hall', province: 'North Western' },
-  kurunegala_3: { status: 'yellow', timer: 8, city: 'Kurunegala - Railway', province: 'North Western' },
-  kurunegala_4: { status: 'green', timer: 50, city: 'Kurunegala - Hospital', province: 'North Western' },
-  kurunegala_5: { status: 'red', timer: 35, city: 'Kurunegala - Bus Stand', province: 'North Western' },
-  matara: { status: 'red', timer: 40, city: 'Matara', province: 'Southern' },
-  batticaloa: { status: 'green', timer: 48, city: 'Batticaloa', province: 'Eastern' },
-  trincomalee: { status: 'yellow', timer: 7, city: 'Trincomalee', province: 'Eastern' },
-  kalutara: { status: 'red', timer: 32, city: 'Kalutara', province: 'Western' },
-  avissawella: { status: 'green', timer: 42, city: 'Avissawella', province: 'Western' },
-  gampaha: { status: 'yellow', timer: 9, city: 'Gampaha', province: 'Western' },
-  matale: { status: 'green', timer: 38, city: 'Matale', province: 'Central' },
-  nugegoda: { status: 'red', timer: 28, city: 'Nugegoda', province: 'Western' },
-  moratuwa: { status: 'green', timer: 52, city: 'Moratuwa', province: 'Western' },
-  dehiwala: { status: 'yellow', timer: 10, city: 'Dehiwala', province: 'Western' },
-  mountlavinia: { status: 'red', timer: 33, city: 'Mount Lavinia', province: 'Western' },
-  chilaw: { status: 'green', timer: 44, city: 'Chilaw', province: 'North Western' },
-  puttalam: { status: 'yellow', timer: 7, city: 'Puttalam', province: 'North Western' },
-  homagama: { status: 'red', timer: 36, city: 'Homagama', province: 'Western' },
-  maharagama: { status: 'green', timer: 49, city: 'Maharagama', province: 'Western' }
+  // ============ COLOMBO ============
+  colombo: {
+    city: 'Colombo',
+    province: 'Western',
+    directions: {
+      up: { status: 'green', timer: 60 },
+      down: { status: 'red', timer: 30 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'red', timer: 35 }
+    }
+  },
+  
+  // ============ KANDY ============
+  kandy: {
+    city: 'Kandy',
+    province: 'Central',
+    directions: {
+      up: { status: 'red', timer: 30 },
+      down: { status: 'green', timer: 50 },
+      left: { status: 'yellow', timer: 5 },
+      right: { status: 'red', timer: 25 }
+    }
+  },
+  
+  // ============ GALLE ============
+  galle: {
+    city: 'Galle',
+    province: 'Southern',
+    directions: {
+      up: { status: 'yellow', timer: 5 },
+      down: { status: 'red', timer: 35 },
+      left: { status: 'green', timer: 55 },
+      right: { status: 'yellow', timer: 8 }
+    }
+  },
+  
+  // ============ NEGOMBO ============
+  negombo: {
+    city: 'Negombo',
+    province: 'Western',
+    directions: {
+      up: { status: 'green', timer: 45 },
+      down: { status: 'yellow', timer: 7 },
+      left: { status: 'red', timer: 32 },
+      right: { status: 'green', timer: 42 }
+    }
+  },
+  
+  // ============ JAFFNA ============
+  jaffna: {
+    city: 'Jaffna',
+    province: 'Northern',
+    directions: {
+      up: { status: 'red', timer: 35 },
+      down: { status: 'green', timer: 48 },
+      left: { status: 'yellow', timer: 6 },
+      right: { status: 'red', timer: 28 }
+    }
+  },
+  
+  // ============ ANURADHAPURA ============
+  anuradhapura: {
+    city: 'Anuradhapura',
+    province: 'North Central',
+    directions: {
+      up: { status: 'green', timer: 50 },
+      down: { status: 'red', timer: 30 },
+      left: { status: 'yellow', timer: 8 },
+      right: { status: 'green', timer: 40 }
+    }
+  },
+  
+  // ============ POLONNARUWA ============
+  polonnaruwa: {
+    city: 'Polonnaruwa',
+    province: 'North Central',
+    directions: {
+      up: { status: 'yellow', timer: 8 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 35 },
+      right: { status: 'yellow', timer: 6 }
+    }
+  },
+  
+  // ============ BADULLA ============
+  badulla: {
+    city: 'Badulla',
+    province: 'Uva',
+    directions: {
+      up: { status: 'red', timer: 25 },
+      down: { status: 'yellow', timer: 7 },
+      left: { status: 'green', timer: 52 },
+      right: { status: 'red', timer: 30 }
+    }
+  },
+  
+  // ============ RATNAPURA ============
+  ratnapura: {
+    city: 'Ratnapura',
+    province: 'Sabaragamuwa',
+    directions: {
+      up: { status: 'green', timer: 55 },
+      down: { status: 'red', timer: 32 },
+      left: { status: 'yellow', timer: 9 },
+      right: { status: 'green', timer: 38 }
+    }
+  },
+  
+  // ============ KURUNEGALA - 5 INTERSECTIONS ============
+  // Each intersection has full directional control
+  kurunegala_1: {
+    city: 'Kurunegala - Main',
+    province: 'North Western',
+    directions: {
+      up: { status: 'green', timer: 45 },
+      down: { status: 'red', timer: 30 },
+      left: { status: 'yellow', timer: 8 },
+      right: { status: 'green', timer: 40 }
+    }
+  },
+  kurunegala_2: {
+    city: 'Kurunegala - Town Hall',
+    province: 'North Western',
+    directions: {
+      up: { status: 'red', timer: 30 },
+      down: { status: 'green', timer: 50 },
+      left: { status: 'yellow', timer: 6 },
+      right: { status: 'red', timer: 28 }
+    }
+  },
+  kurunegala_3: {
+    city: 'Kurunegala - Railway',
+    province: 'North Western',
+    directions: {
+      up: { status: 'yellow', timer: 8 },
+      down: { status: 'red', timer: 35 },
+      left: { status: 'green', timer: 48 },
+      right: { status: 'yellow', timer: 7 }
+    }
+  },
+  kurunegala_4: {
+    city: 'Kurunegala - Hospital',
+    province: 'North Western',
+    directions: {
+      up: { status: 'green', timer: 50 },
+      down: { status: 'yellow', timer: 9 },
+      left: { status: 'red', timer: 32 },
+      right: { status: 'green', timer: 42 }
+    }
+  },
+  kurunegala_5: {
+    city: 'Kurunegala - Bus Stand',
+    province: 'North Western',
+    directions: {
+      up: { status: 'red', timer: 35 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'yellow', timer: 7 },
+      right: { status: 'red', timer: 30 }
+    }
+  },
+  
+  // ============ MATARA ============
+  matara: {
+    city: 'Matara',
+    province: 'Southern',
+    directions: {
+      up: { status: 'red', timer: 40 },
+      down: { status: 'green', timer: 55 },
+      left: { status: 'yellow', timer: 8 },
+      right: { status: 'red', timer: 30 }
+    }
+  },
+  
+  // ============ BATTICALOA ============
+  batticaloa: {
+    city: 'Batticaloa',
+    province: 'Eastern',
+    directions: {
+      up: { status: 'green', timer: 48 },
+      down: { status: 'red', timer: 30 },
+      left: { status: 'yellow', timer: 6 },
+      right: { status: 'green', timer: 42 }
+    }
+  },
+  
+  // ============ TRINCOMALEE ============
+  trincomalee: {
+    city: 'Trincomalee',
+    province: 'Eastern',
+    directions: {
+      up: { status: 'yellow', timer: 7 },
+      down: { status: 'green', timer: 50 },
+      left: { status: 'red', timer: 28 },
+      right: { status: 'yellow', timer: 8 }
+    }
+  },
+  
+  // ============ KALUTARA ============
+  kalutara: {
+    city: 'Kalutara',
+    province: 'Western',
+    directions: {
+      up: { status: 'red', timer: 32 },
+      down: { status: 'yellow', timer: 8 },
+      left: { status: 'green', timer: 52 },
+      right: { status: 'red', timer: 30 }
+    }
+  },
+  
+  // ============ AVISSAWELLA ============
+  avissawella: {
+    city: 'Avissawella',
+    province: 'Western',
+    directions: {
+      up: { status: 'green', timer: 42 },
+      down: { status: 'red', timer: 35 },
+      left: { status: 'yellow', timer: 7 },
+      right: { status: 'green', timer: 38 }
+    }
+  },
+  
+  // ============ GAMPAHA ============
+  gampaha: {
+    city: 'Gampaha',
+    province: 'Western',
+    directions: {
+      up: { status: 'yellow', timer: 9 },
+      down: { status: 'green', timer: 48 },
+      left: { status: 'red', timer: 30 },
+      right: { status: 'yellow', timer: 6 }
+    }
+  },
+  
+  // ============ MATALE ============
+  matale: {
+    city: 'Matale',
+    province: 'Central',
+    directions: {
+      up: { status: 'green', timer: 38 },
+      down: { status: 'red', timer: 32 },
+      left: { status: 'yellow', timer: 8 },
+      right: { status: 'green', timer: 44 }
+    }
+  },
+  
+  // ============ NUGEGODA ============
+  nugegoda: {
+    city: 'Nugegoda',
+    province: 'Western',
+    directions: {
+      up: { status: 'red', timer: 28 },
+      down: { status: 'green', timer: 52 },
+      left: { status: 'yellow', timer: 7 },
+      right: { status: 'red', timer: 30 }
+    }
+  },
+  
+  // ============ MORATUWA ============
+  moratuwa: {
+    city: 'Moratuwa',
+    province: 'Western',
+    directions: {
+      up: { status: 'green', timer: 52 },
+      down: { status: 'red', timer: 30 },
+      left: { status: 'yellow', timer: 9 },
+      right: { status: 'green', timer: 40 }
+    }
+  },
+  
+  // ============ DEHIWALA ============
+  dehiwala: {
+    city: 'Dehiwala',
+    province: 'Western',
+    directions: {
+      up: { status: 'yellow', timer: 10 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 28 },
+      right: { status: 'yellow', timer: 7 }
+    }
+  },
+  
+  // ============ MOUNT LAVINIA ============
+  mountlavinia: {
+    city: 'Mount Lavinia',
+    province: 'Western',
+    directions: {
+      up: { status: 'red', timer: 33 },
+      down: { status: 'yellow', timer: 8 },
+      left: { status: 'green', timer: 48 },
+      right: { status: 'red', timer: 30 }
+    }
+  },
+  
+  // ============ CHILAW ============
+  chilaw: {
+    city: 'Chilaw',
+    province: 'North Western',
+    directions: {
+      up: { status: 'green', timer: 44 },
+      down: { status: 'red', timer: 30 },
+      left: { status: 'yellow', timer: 7 },
+      right: { status: 'green', timer: 38 }
+    }
+  },
+  
+  // ============ PUTTALAM ============
+  puttalam: {
+    city: 'Puttalam',
+    province: 'North Western',
+    directions: {
+      up: { status: 'yellow', timer: 7 },
+      down: { status: 'green', timer: 50 },
+      left: { status: 'red', timer: 28 },
+      right: { status: 'yellow', timer: 8 }
+    }
+  },
+  
+  // ============ HOMAGAMA ============
+  homagama: {
+    city: 'Homagama',
+    province: 'Western',
+    directions: {
+      up: { status: 'red', timer: 36 },
+      down: { status: 'green', timer: 48 },
+      left: { status: 'yellow', timer: 8 },
+      right: { status: 'red', timer: 30 }
+    }
+  },
+  
+  // ============ MAHARAGAMA ============
+  maharagama: {
+    city: 'Maharagama',
+    province: 'Western',
+    directions: {
+      up: { status: 'green', timer: 49 },
+      down: { status: 'red', timer: 30 },
+      left: { status: 'yellow', timer: 9 },
+      right: { status: 'green', timer: 40 }
+    }
+  }
 };
+
+// Helper function to get all direction statuses for a city
+function getCityDirections(location) {
+  if (!trafficLights[location]) return null;
+  return trafficLights[location].directions;
+}
+
+// Helper function to get a specific direction status
+function getDirectionStatus(location, direction) {
+  if (!trafficLights[location]) return null;
+  if (!trafficLights[location].directions[direction]) return null;
+  return trafficLights[location].directions[direction];
+}
+
+// Helper function to set direction status
+function setDirectionStatus(location, direction, status, timer) {
+  if (!trafficLights[location]) return false;
+  if (!trafficLights[location].directions[direction]) return false;
+  
+  trafficLights[location].directions[direction].status = status;
+  if (timer !== undefined) {
+    trafficLights[location].directions[direction].timer = timer;
+  }
+  return true;
+}
 
 // IoT Sensors Data
 const iotData = {
@@ -106,7 +443,7 @@ function broadcastUpdate(data) {
   });
 }
 
-// Update traffic lights
+// Update traffic lights with directional control
 function updateTrafficLights() {
   const locations = Object.keys(trafficLights);
   const changes = [];
@@ -118,8 +455,14 @@ function updateTrafficLights() {
     if (new Date(override.expires).getTime() < now) {
       delete emergencyOverrides[location];
       if (trafficLights[location]) {
-        trafficLights[location].status = 'green';
-        trafficLights[location].timer = 60;
+        // Reset all directions to green with default timers
+        const directions = ['up', 'down', 'left', 'right'];
+        directions.forEach(dir => {
+          if (trafficLights[location].directions[dir]) {
+            trafficLights[location].directions[dir].status = 'green';
+            trafficLights[location].directions[dir].timer = 60;
+          }
+        });
       }
     }
   });
@@ -127,31 +470,39 @@ function updateTrafficLights() {
   locations.forEach(location => {
     if (emergencyOverrides[location]) return;
     
-    const light = trafficLights[location];
-    light.timer -= 1;
+    const cityLights = trafficLights[location];
+    const directions = ['up', 'down', 'left', 'right'];
     
-    if (light.timer <= 0) {
-      const oldStatus = light.status;
-      if (light.status === 'green') {
-        light.status = 'yellow';
-        light.timer = 5;
-      } else if (light.status === 'yellow') {
-        light.status = 'red';
-        light.timer = 30;
-      } else if (light.status === 'red') {
-        light.status = 'green';
-        light.timer = 60;
-      }
+    directions.forEach(direction => {
+      const light = cityLights.directions[direction];
+      if (!light) return;
       
-      changes.push({
-        location: location,
-        oldStatus: oldStatus,
-        newStatus: light.status,
-        timer: light.timer,
-        city: light.city,
-        province: light.province
-      });
-    }
+      light.timer -= 1;
+      
+      if (light.timer <= 0) {
+        const oldStatus = light.status;
+        if (light.status === 'green') {
+          light.status = 'yellow';
+          light.timer = 5;
+        } else if (light.status === 'yellow') {
+          light.status = 'red';
+          light.timer = 30;
+        } else if (light.status === 'red') {
+          light.status = 'green';
+          light.timer = 60;
+        }
+        
+        changes.push({
+          location: location,
+          direction: direction,
+          oldStatus: oldStatus,
+          newStatus: light.status,
+          timer: light.timer,
+          city: cityLights.city,
+          province: cityLights.province
+        });
+      }
+    });
   });
   
   if (changes.length > 0) {
@@ -233,6 +584,48 @@ function updateIotData() {
   });
 }
 
+// Calculate statistics with directional data
+function calculateStats() {
+  const total = Object.keys(trafficLights).length;
+  const statusCounts = { red: 0, yellow: 0, green: 0 };
+  const directionCounts = { up: { red: 0, yellow: 0, green: 0 }, down: { red: 0, yellow: 0, green: 0 }, left: { red: 0, yellow: 0, green: 0 }, right: { red: 0, yellow: 0, green: 0 } };
+  const provinceStats = {};
+  
+  Object.keys(trafficLights).forEach(key => {
+    const light = trafficLights[key];
+    const directions = ['up', 'down', 'left', 'right'];
+    
+    directions.forEach(dir => {
+      const dirLight = light.directions[dir];
+      if (dirLight) {
+        statusCounts[dirLight.status]++;
+        directionCounts[dir][dirLight.status]++;
+      }
+    });
+    
+    if (!provinceStats[light.province]) {
+      provinceStats[light.province] = { 
+        total: 0, 
+        red: 0, 
+        yellow: 0, 
+        green: 0,
+        cities: []
+      };
+    }
+    provinceStats[light.province].total++;
+    provinceStats[light.province].cities.push(light.city);
+  });
+  
+  return {
+    totalCities: total,
+    totalDirections: total * 4,
+    statusDistribution: statusCounts,
+    directionCounts: directionCounts,
+    provinceStats: provinceStats,
+    timestamp: new Date().toISOString()
+  };
+}
+
 module.exports = {
   trafficLights,
   iotData,
@@ -240,5 +633,9 @@ module.exports = {
   clients,
   updateTrafficLights,
   updateIotData,
-  broadcastUpdate
+  broadcastUpdate,
+  getCityDirections,
+  getDirectionStatus,
+  setDirectionStatus,
+  calculateStats
 };
