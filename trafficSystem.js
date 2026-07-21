@@ -623,10 +623,11 @@ function updateTrafficLights() {
         province: cityLights.province
       });
     } else {
+      // Synchronize individual direction timers safely with the current phase
       const directions = ['up', 'down', 'left', 'right'];
       directions.forEach(dir => {
         if (cityLights.directions[dir]) {
-          cityLights.directions[dir].timer = Math.max(0, cityLights.directions[dir].timer - 1);
+          cityLights.directions[dir].timer = Math.max(0, cityLights.phaseTimer);
         }
       });
     }
