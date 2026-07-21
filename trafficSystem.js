@@ -513,13 +513,11 @@ function setDirectionStatus(location, direction, status, timer) {
   if (!trafficLights[location]) return false;
   if (!trafficLights[location].directions[direction]) return false;
   
-  // Validate: If setting a direction to green, ensure the opposite pair is red
   if (status === 'green') {
     const isVertical = (direction === 'up' || direction === 'down');
     const oppositePair = isVertical ? ['left', 'right'] : ['up', 'down'];
     const oppositeStatuses = oppositePair.map(dir => trafficLights[location].directions[dir]?.status);
     
-    // If any opposite direction is green, prevent this change
     if (oppositeStatuses.some(s => s === 'green')) {
       console.warn(`Cannot set ${direction} to green because opposite pair is green at ${location}`);
       return false;
@@ -541,17 +539,14 @@ function resetCityToOriginalState(location) {
   const directions = ['up', 'down', 'left', 'right'];
   directions.forEach(dir => {
     if (trafficLights[location].directions[dir]) {
-      // Restore original status
       const originalStatus = ORIGINAL_STATUSES[location][dir] || 'green';
       trafficLights[location].directions[dir].status = originalStatus;
       
-      // Restore original timer
       const originalTimer = ORIGINAL_TIMERS[location][dir] || 30;
       trafficLights[location].directions[dir].timer = originalTimer;
     }
   });
   
-  // Also restore phase based on original statuses
   const upStatus = trafficLights[location].directions.up?.status || 'green';
   if (upStatus === 'green') {
     trafficLights[location].phase = 'vertical-green';
@@ -580,7 +575,6 @@ function resetCityToOriginalState(location) {
 // BROADCAST FUNCTION
 // ============================================
 
-// Broadcast update to all clients
 function broadcastUpdate(data) {
   const message = JSON.stringify(data);
   clients.forEach(client => {
@@ -591,15 +585,13 @@ function broadcastUpdate(data) {
 }
 
 // ============================================
-// UPDATE FUNCTIONS - FIXED TIME MANAGEMENT
+// UPDATE FUNCTIONS - FIXED FOR COLLISION PREVENTION
 // ============================================
 
-// Update traffic lights with SINGLE PHASE state machine - FIXED
 function updateTrafficLights() {
   const locations = Object.keys(trafficLights);
   const changes = [];
   
-  // Check for expired emergency overrides
   const now = Date.now();
   const expiredLocations = [];
   
@@ -610,15 +602,12 @@ function updateTrafficLights() {
     }
   });
   
-  // Process expired emergency overrides
   expiredLocations.forEach(location => {
     delete emergencyOverrides[location];
     
-    // Reset to original state
     if (trafficLights[location]) {
       resetCityToOriginalState(location);
       
-      // Broadcast that emergency has ended
       broadcastUpdate({
         type: 'emergencyStopped',
         location: location,
@@ -627,7 +616,6 @@ function updateTrafficLights() {
         timestamp: new Date().toISOString()
       });
       
-      // Record change for all directions
       const directions = ['up', 'down', 'left', 'right'];
       directions.forEach(dir => {
         const light = trafficLights[location].directions[dir];
@@ -647,39 +635,32 @@ function updateTrafficLights() {
     }
   });
   
-  // Update each location using SINGLE PHASE state machine
   locations.forEach(location => {
-    // Skip if emergency override is active
     if (emergencyOverrides[location]) return;
     
     const cityLights = trafficLights[location];
     const currentPhase = cityLights.phase;
     
-    // Decrement phase timer
     cityLights.phaseTimer -= 1;
     
-    // Check if phase timer expired
     if (cityLights.phaseTimer <= 0) {
       let newPhase = '';
       let newTimer = 0;
       
-      // Phase transitions - SINGLE STATE MACHINE with PROPER TIME MANAGEMENT
       switch (currentPhase) {
         case 'vertical-green':
-          // Vertical Green -> Vertical Yellow (5 seconds)
           newPhase = 'vertical-yellow';
           newTimer = 5;
           
-          // Update directions - Vertical to Yellow, Horizontal stays RED
           cityLights.directions.up.status = 'yellow';
           cityLights.directions.up.timer = 5;
           cityLights.directions.down.status = 'yellow';
           cityLights.directions.down.timer = 5;
-          // Horizontal stays red
+          // Horizontal strictly RED
           cityLights.directions.left.status = 'red';
-          cityLights.directions.left.timer = 30;
+          cityLights.directions.left.timer = 5;
           cityLights.directions.right.status = 'red';
-          cityLights.directions.right.timer = 30;
+          cityLights.directions.right.timer = 5;
           
           changes.push({
             location: location,
@@ -694,16 +675,14 @@ function updateTrafficLights() {
           break;
           
         case 'vertical-yellow':
-          // Vertical Yellow -> Horizontal Green (60 seconds)
+          // Vertical Yellow -> Horizontal Green: Vertical must be RED, Horizontal GREEN
           newPhase = 'horizontal-green';
           newTimer = 60;
           
-          // Vertical to RED
           cityLights.directions.up.status = 'red';
-          cityLights.directions.up.timer = 30;
+          cityLights.directions.up.timer = 60;
           cityLights.directions.down.status = 'red';
-          cityLights.directions.down.timer = 30;
-          // Horizontal to GREEN
+          cityLights.directions.down.timer = 60;
           cityLights.directions.left.status = 'green';
           cityLights.directions.left.timer = 60;
           cityLights.directions.right.status = 'green';
@@ -714,7 +693,7 @@ function updateTrafficLights() {
             direction: 'vertical',
             oldStatus: 'yellow',
             newStatus: 'red',
-            timer: 30,
+            timer: 60,
             city: cityLights.city,
             province: cityLights.province,
             phase: 'horizontal-green'
@@ -732,20 +711,18 @@ function updateTrafficLights() {
           break;
           
         case 'horizontal-green':
-          // Horizontal Green -> Horizontal Yellow (5 seconds)
           newPhase = 'horizontal-yellow';
           newTimer = 5;
           
-          // Horizontal to YELLOW
           cityLights.directions.left.status = 'yellow';
           cityLights.directions.left.timer = 5;
           cityLights.directions.right.status = 'yellow';
           cityLights.directions.right.timer = 5;
-          // Vertical stays RED
+          // Vertical strictly RED
           cityLights.directions.up.status = 'red';
-          cityLights.directions.up.timer = 30;
+          cityLights.directions.up.timer = 5;
           cityLights.directions.down.status = 'red';
-          cityLights.directions.down.timer = 30;
+          cityLights.directions.down.timer = 5;
           
           changes.push({
             location: location,
@@ -760,16 +737,14 @@ function updateTrafficLights() {
           break;
           
         case 'horizontal-yellow':
-          // Horizontal Yellow -> Vertical Green (60 seconds)
+          // Horizontal Yellow -> Vertical Green: Horizontal must be RED, Vertical GREEN
           newPhase = 'vertical-green';
           newTimer = 60;
           
-          // Horizontal to RED
           cityLights.directions.left.status = 'red';
-          cityLights.directions.left.timer = 30;
+          cityLights.directions.left.timer = 60;
           cityLights.directions.right.status = 'red';
-          cityLights.directions.right.timer = 30;
-          // Vertical to GREEN
+          cityLights.directions.right.timer = 60;
           cityLights.directions.up.status = 'green';
           cityLights.directions.up.timer = 60;
           cityLights.directions.down.status = 'green';
@@ -780,7 +755,7 @@ function updateTrafficLights() {
             direction: 'horizontal',
             oldStatus: 'yellow',
             newStatus: 'red',
-            timer: 30,
+            timer: 60,
             city: cityLights.city,
             province: cityLights.province,
             phase: 'vertical-green'
@@ -798,7 +773,6 @@ function updateTrafficLights() {
           break;
           
         default:
-          // Fallback - default to vertical green
           newPhase = 'vertical-green';
           newTimer = 60;
           cityLights.directions.up.status = 'green';
@@ -806,28 +780,24 @@ function updateTrafficLights() {
           cityLights.directions.down.status = 'green';
           cityLights.directions.down.timer = 60;
           cityLights.directions.left.status = 'red';
-          cityLights.directions.left.timer = 30;
+          cityLights.directions.left.timer = 60;
           cityLights.directions.right.status = 'red';
-          cityLights.directions.right.timer = 30;
+          cityLights.directions.right.timer = 60;
           break;
       }
       
-      // Update phase and timer
       cityLights.phase = newPhase;
       cityLights.phaseTimer = newTimer;
     } else {
-      // Timer not expired - just update the timer display in directions
       const directions = ['up', 'down', 'left', 'right'];
       directions.forEach(dir => {
         if (cityLights.directions[dir]) {
-          // Decrement timer for display
           cityLights.directions[dir].timer = Math.max(0, cityLights.directions[dir].timer - 1);
         }
       });
     }
   });
   
-  // Broadcast changes if any
   if (changes.length > 0) {
     broadcastUpdate({
       type: 'statusChange',
