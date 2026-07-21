@@ -6,12 +6,14 @@ const ORIGINAL_TIMERS = {};
 const ORIGINAL_STATUSES = {};
 
 // Traffic light state management for all Sri Lankan cities with directional controls
-// Each city has independent traffic lights for each direction
+// Each city has a single phase that controls both pairs simultaneously
 const trafficLights = {
   // ============ COLOMBO ============
   colombo: {
     city: 'Colombo',
     province: 'Western',
+    phase: 'vertical-green', // vertical-green, vertical-yellow, horizontal-green, horizontal-yellow
+    phaseTimer: 60,
     directions: {
       up: { status: 'green', timer: 60 },
       down: { status: 'green', timer: 60 },
@@ -24,6 +26,8 @@ const trafficLights = {
   kandy: {
     city: 'Kandy',
     province: 'Central',
+    phase: 'horizontal-green',
+    phaseTimer: 50,
     directions: {
       up: { status: 'red', timer: 30 },
       down: { status: 'red', timer: 30 },
@@ -36,6 +40,8 @@ const trafficLights = {
   galle: {
     city: 'Galle',
     province: 'Southern',
+    phase: 'horizontal-green',
+    phaseTimer: 55,
     directions: {
       up: { status: 'yellow', timer: 5 },
       down: { status: 'yellow', timer: 5 },
@@ -48,6 +54,8 @@ const trafficLights = {
   negombo: {
     city: 'Negombo',
     province: 'Western',
+    phase: 'vertical-green',
+    phaseTimer: 45,
     directions: {
       up: { status: 'green', timer: 45 },
       down: { status: 'green', timer: 45 },
@@ -60,6 +68,8 @@ const trafficLights = {
   jaffna: {
     city: 'Jaffna',
     province: 'Northern',
+    phase: 'horizontal-green',
+    phaseTimer: 48,
     directions: {
       up: { status: 'red', timer: 35 },
       down: { status: 'red', timer: 35 },
@@ -72,6 +82,8 @@ const trafficLights = {
   anuradhapura: {
     city: 'Anuradhapura',
     province: 'North Central',
+    phase: 'vertical-green',
+    phaseTimer: 50,
     directions: {
       up: { status: 'green', timer: 50 },
       down: { status: 'green', timer: 50 },
@@ -84,6 +96,8 @@ const trafficLights = {
   polonnaruwa: {
     city: 'Polonnaruwa',
     province: 'North Central',
+    phase: 'horizontal-green',
+    phaseTimer: 45,
     directions: {
       up: { status: 'yellow', timer: 8 },
       down: { status: 'yellow', timer: 8 },
@@ -96,6 +110,8 @@ const trafficLights = {
   badulla: {
     city: 'Badulla',
     province: 'Uva',
+    phase: 'horizontal-green',
+    phaseTimer: 52,
     directions: {
       up: { status: 'red', timer: 25 },
       down: { status: 'red', timer: 25 },
@@ -108,6 +124,8 @@ const trafficLights = {
   ratnapura: {
     city: 'Ratnapura',
     province: 'Sabaragamuwa',
+    phase: 'vertical-green',
+    phaseTimer: 55,
     directions: {
       up: { status: 'green', timer: 55 },
       down: { status: 'green', timer: 55 },
@@ -120,6 +138,8 @@ const trafficLights = {
   kurunegala_1: {
     city: 'Kurunegala - Main',
     province: 'North Western',
+    phase: 'vertical-green',
+    phaseTimer: 45,
     directions: {
       up: { status: 'green', timer: 45 },
       down: { status: 'green', timer: 45 },
@@ -130,6 +150,8 @@ const trafficLights = {
   kurunegala_2: {
     city: 'Kurunegala - Town Hall',
     province: 'North Western',
+    phase: 'horizontal-green',
+    phaseTimer: 50,
     directions: {
       up: { status: 'red', timer: 30 },
       down: { status: 'red', timer: 30 },
@@ -140,6 +162,8 @@ const trafficLights = {
   kurunegala_3: {
     city: 'Kurunegala - Railway',
     province: 'North Western',
+    phase: 'horizontal-green',
+    phaseTimer: 48,
     directions: {
       up: { status: 'yellow', timer: 8 },
       down: { status: 'yellow', timer: 8 },
@@ -150,6 +174,8 @@ const trafficLights = {
   kurunegala_4: {
     city: 'Kurunegala - Hospital',
     province: 'North Western',
+    phase: 'vertical-green',
+    phaseTimer: 50,
     directions: {
       up: { status: 'green', timer: 50 },
       down: { status: 'green', timer: 50 },
@@ -160,6 +186,8 @@ const trafficLights = {
   kurunegala_5: {
     city: 'Kurunegala - Bus Stand',
     province: 'North Western',
+    phase: 'horizontal-green',
+    phaseTimer: 45,
     directions: {
       up: { status: 'red', timer: 35 },
       down: { status: 'red', timer: 35 },
@@ -172,6 +200,8 @@ const trafficLights = {
   matara: {
     city: 'Matara',
     province: 'Southern',
+    phase: 'horizontal-green',
+    phaseTimer: 55,
     directions: {
       up: { status: 'red', timer: 40 },
       down: { status: 'red', timer: 40 },
@@ -184,6 +214,8 @@ const trafficLights = {
   batticaloa: {
     city: 'Batticaloa',
     province: 'Eastern',
+    phase: 'vertical-green',
+    phaseTimer: 48,
     directions: {
       up: { status: 'green', timer: 48 },
       down: { status: 'green', timer: 48 },
@@ -196,6 +228,8 @@ const trafficLights = {
   trincomalee: {
     city: 'Trincomalee',
     province: 'Eastern',
+    phase: 'horizontal-green',
+    phaseTimer: 50,
     directions: {
       up: { status: 'yellow', timer: 7 },
       down: { status: 'yellow', timer: 7 },
@@ -208,6 +242,8 @@ const trafficLights = {
   kalutara: {
     city: 'Kalutara',
     province: 'Western',
+    phase: 'horizontal-green',
+    phaseTimer: 52,
     directions: {
       up: { status: 'red', timer: 32 },
       down: { status: 'red', timer: 32 },
@@ -220,6 +256,8 @@ const trafficLights = {
   avissawella: {
     city: 'Avissawella',
     province: 'Western',
+    phase: 'vertical-green',
+    phaseTimer: 42,
     directions: {
       up: { status: 'green', timer: 42 },
       down: { status: 'green', timer: 42 },
@@ -232,6 +270,8 @@ const trafficLights = {
   gampaha: {
     city: 'Gampaha',
     province: 'Western',
+    phase: 'horizontal-green',
+    phaseTimer: 48,
     directions: {
       up: { status: 'yellow', timer: 9 },
       down: { status: 'yellow', timer: 9 },
@@ -244,6 +284,8 @@ const trafficLights = {
   matale: {
     city: 'Matale',
     province: 'Central',
+    phase: 'vertical-green',
+    phaseTimer: 38,
     directions: {
       up: { status: 'green', timer: 38 },
       down: { status: 'green', timer: 38 },
@@ -256,6 +298,8 @@ const trafficLights = {
   nugegoda: {
     city: 'Nugegoda',
     province: 'Western',
+    phase: 'horizontal-green',
+    phaseTimer: 52,
     directions: {
       up: { status: 'red', timer: 28 },
       down: { status: 'red', timer: 28 },
@@ -268,6 +312,8 @@ const trafficLights = {
   moratuwa: {
     city: 'Moratuwa',
     province: 'Western',
+    phase: 'vertical-green',
+    phaseTimer: 52,
     directions: {
       up: { status: 'green', timer: 52 },
       down: { status: 'green', timer: 52 },
@@ -280,6 +326,8 @@ const trafficLights = {
   dehiwala: {
     city: 'Dehiwala',
     province: 'Western',
+    phase: 'horizontal-green',
+    phaseTimer: 45,
     directions: {
       up: { status: 'yellow', timer: 10 },
       down: { status: 'yellow', timer: 10 },
@@ -292,6 +340,8 @@ const trafficLights = {
   mountlavinia: {
     city: 'Mount Lavinia',
     province: 'Western',
+    phase: 'horizontal-green',
+    phaseTimer: 48,
     directions: {
       up: { status: 'red', timer: 33 },
       down: { status: 'red', timer: 33 },
@@ -304,6 +354,8 @@ const trafficLights = {
   chilaw: {
     city: 'Chilaw',
     province: 'North Western',
+    phase: 'vertical-green',
+    phaseTimer: 44,
     directions: {
       up: { status: 'green', timer: 44 },
       down: { status: 'green', timer: 44 },
@@ -316,6 +368,8 @@ const trafficLights = {
   puttalam: {
     city: 'Puttalam',
     province: 'North Western',
+    phase: 'horizontal-green',
+    phaseTimer: 50,
     directions: {
       up: { status: 'yellow', timer: 7 },
       down: { status: 'yellow', timer: 7 },
@@ -328,6 +382,8 @@ const trafficLights = {
   homagama: {
     city: 'Homagama',
     province: 'Western',
+    phase: 'horizontal-green',
+    phaseTimer: 48,
     directions: {
       up: { status: 'red', timer: 36 },
       down: { status: 'red', timer: 36 },
@@ -340,6 +396,8 @@ const trafficLights = {
   maharagama: {
     city: 'Maharagama',
     province: 'Western',
+    phase: 'vertical-green',
+    phaseTimer: 49,
     directions: {
       up: { status: 'green', timer: 49 },
       down: { status: 'green', timer: 49 },
@@ -382,40 +440,28 @@ function getDirectionStatus(location, direction) {
   return trafficLights[location].directions[direction];
 }
 
-// Helper function to set direction status
+// Helper function to set direction status (with phase validation)
 function setDirectionStatus(location, direction, status, timer) {
   if (!trafficLights[location]) return false;
   if (!trafficLights[location].directions[direction]) return false;
+  
+  // Validate: If setting a direction to green, ensure the opposite pair is red
+  if (status === 'green') {
+    const isVertical = (direction === 'up' || direction === 'down');
+    const oppositePair = isVertical ? ['left', 'right'] : ['up', 'down'];
+    const oppositeStatuses = oppositePair.map(dir => trafficLights[location].directions[dir]?.status);
+    
+    // If any opposite direction is green, prevent this change
+    if (oppositeStatuses.some(s => s === 'green')) {
+      console.warn(`Cannot set ${direction} to green because opposite pair is green at ${location}`);
+      return false;
+    }
+  }
   
   trafficLights[location].directions[direction].status = status;
   if (timer !== undefined) {
     trafficLights[location].directions[direction].timer = timer;
   }
-  return true;
-}
-
-// Helper function to set paired directions (Up + Down or Left + Right)
-function setPairedDirections(location, pair, status, timer) {
-  if (!trafficLights[location]) return false;
-  
-  let dirs = [];
-  if (pair === 'vertical') {
-    dirs = ['up', 'down'];
-  } else if (pair === 'horizontal') {
-    dirs = ['left', 'right'];
-  } else {
-    return false;
-  }
-  
-  dirs.forEach(dir => {
-    if (trafficLights[location].directions[dir]) {
-      trafficLights[location].directions[dir].status = status;
-      if (timer !== undefined) {
-        trafficLights[location].directions[dir].timer = timer;
-      }
-    }
-  });
-  
   return true;
 }
 
@@ -437,108 +483,19 @@ function resetCityToOriginalState(location) {
     }
   });
   
+  // Also restore phase based on original statuses
+  const upStatus = trafficLights[location].directions.up?.status || 'green';
+  if (upStatus === 'green' || upStatus === 'yellow') {
+    trafficLights[location].phase = upStatus === 'green' ? 'vertical-green' : 'vertical-yellow';
+  } else {
+    const leftStatus = trafficLights[location].directions.left?.status || 'green';
+    trafficLights[location].phase = leftStatus === 'green' ? 'horizontal-green' : 'horizontal-yellow';
+  }
+  
   return true;
 }
 
-// Get the current state of a pair (vertical or horizontal)
-function getPairStatus(location, pair) {
-  if (!trafficLights[location]) return null;
-  
-  let dirs = [];
-  if (pair === 'vertical') {
-    dirs = ['up', 'down'];
-  } else if (pair === 'horizontal') {
-    dirs = ['left', 'right'];
-  } else {
-    return null;
-  }
-  
-  const statuses = [];
-  dirs.forEach(dir => {
-    if (trafficLights[location].directions[dir]) {
-      statuses.push(trafficLights[location].directions[dir].status);
-    }
-  });
-  
-  // Return the first status if all are the same, otherwise return 'mixed'
-  if (statuses.length === 0) return null;
-  const allSame = statuses.every(s => s === statuses[0]);
-  return allSame ? statuses[0] : 'mixed';
-}
-
-// IoT Sensors Data
-const iotData = {
-  cameras: {
-    colombo: { id: 'CAM-001', location: 'Colombo', status: 'active', vehiclesDetected: 45, pedestrians: 12, timestamp: new Date().toISOString() },
-    kandy: { id: 'CAM-002', location: 'Kandy', status: 'active', vehiclesDetected: 28, pedestrians: 8, timestamp: new Date().toISOString() },
-    galle: { id: 'CAM-003', location: 'Galle', status: 'active', vehiclesDetected: 32, pedestrians: 15, timestamp: new Date().toISOString() },
-    negombo: { id: 'CAM-004', location: 'Negombo', status: 'active', vehiclesDetected: 38, pedestrians: 10, timestamp: new Date().toISOString() },
-    jaffna: { id: 'CAM-005', location: 'Jaffna', status: 'active', vehiclesDetected: 22, pedestrians: 6, timestamp: new Date().toISOString() },
-    kurunegala_1: { id: 'CAM-006', location: 'Kurunegala - Main', status: 'active', vehiclesDetected: 35, pedestrians: 14, timestamp: new Date().toISOString() },
-    kurunegala_2: { id: 'CAM-007', location: 'Kurunegala - Town Hall', status: 'active', vehiclesDetected: 29, pedestrians: 11, timestamp: new Date().toISOString() },
-    kurunegala_3: { id: 'CAM-008', location: 'Kurunegala - Railway', status: 'active', vehiclesDetected: 42, pedestrians: 9, timestamp: new Date().toISOString() },
-    kurunegala_4: { id: 'CAM-009', location: 'Kurunegala - Hospital', status: 'active', vehiclesDetected: 31, pedestrians: 13, timestamp: new Date().toISOString() },
-    kurunegala_5: { id: 'CAM-010', location: 'Kurunegala - Bus Stand', status: 'active', vehiclesDetected: 48, pedestrians: 18, timestamp: new Date().toISOString() }
-  },
-  
-  inductiveLoops: {
-    colombo: { id: 'LOOP-001', location: 'Colombo', vehicleCount: 156, avgSpeed: 35, congestion: 'medium', timestamp: new Date().toISOString() },
-    kandy: { id: 'LOOP-002', location: 'Kandy', vehicleCount: 89, avgSpeed: 42, congestion: 'low', timestamp: new Date().toISOString() },
-    galle: { id: 'LOOP-003', location: 'Galle', vehicleCount: 124, avgSpeed: 28, congestion: 'high', timestamp: new Date().toISOString() },
-    negombo: { id: 'LOOP-004', location: 'Negombo', vehicleCount: 98, avgSpeed: 38, congestion: 'medium', timestamp: new Date().toISOString() },
-    jaffna: { id: 'LOOP-005', location: 'Jaffna', vehicleCount: 67, avgSpeed: 45, congestion: 'low', timestamp: new Date().toISOString() },
-    kurunegala_1: { id: 'LOOP-006', location: 'Kurunegala - Main', vehicleCount: 112, avgSpeed: 32, congestion: 'medium', timestamp: new Date().toISOString() },
-    kurunegala_2: { id: 'LOOP-007', location: 'Kurunegala - Town Hall', vehicleCount: 78, avgSpeed: 40, congestion: 'low', timestamp: new Date().toISOString() },
-    kurunegala_3: { id: 'LOOP-008', location: 'Kurunegala - Railway', vehicleCount: 95, avgSpeed: 30, congestion: 'medium', timestamp: new Date().toISOString() },
-    kurunegala_4: { id: 'LOOP-009', location: 'Kurunegala - Hospital', vehicleCount: 65, avgSpeed: 44, congestion: 'low', timestamp: new Date().toISOString() },
-    kurunegala_5: { id: 'LOOP-010', location: 'Kurunegala - Bus Stand', vehicleCount: 145, avgSpeed: 25, congestion: 'high', timestamp: new Date().toISOString() }
-  },
-  
-  airQuality: {
-    colombo: { id: 'AQ-001', location: 'Colombo', aqi: 85, pm25: 35, pm10: 55, co2: 420, no2: 15, status: 'moderate', timestamp: new Date().toISOString() },
-    kandy: { id: 'AQ-002', location: 'Kandy', aqi: 62, pm25: 22, pm10: 38, co2: 380, no2: 10, status: 'good', timestamp: new Date().toISOString() },
-    galle: { id: 'AQ-003', location: 'Galle', aqi: 45, pm25: 15, pm10: 28, co2: 350, no2: 8, status: 'good', timestamp: new Date().toISOString() },
-    negombo: { id: 'AQ-004', location: 'Negombo', aqi: 78, pm25: 30, pm10: 48, co2: 400, no2: 12, status: 'moderate', timestamp: new Date().toISOString() },
-    jaffna: { id: 'AQ-005', location: 'Jaffna', aqi: 55, pm25: 20, pm10: 32, co2: 370, no2: 9, status: 'good', timestamp: new Date().toISOString() },
-    kurunegala_1: { id: 'AQ-006', location: 'Kurunegala - Main', aqi: 72, pm25: 28, pm10: 45, co2: 390, no2: 11, status: 'moderate', timestamp: new Date().toISOString() },
-    kurunegala_2: { id: 'AQ-007', location: 'Kurunegala - Town Hall', aqi: 58, pm25: 20, pm10: 35, co2: 365, no2: 9, status: 'good', timestamp: new Date().toISOString() },
-    kurunegala_3: { id: 'AQ-008', location: 'Kurunegala - Railway', aqi: 68, pm25: 25, pm10: 40, co2: 385, no2: 10, status: 'moderate', timestamp: new Date().toISOString() },
-    kurunegala_4: { id: 'AQ-009', location: 'Kurunegala - Hospital', aqi: 52, pm25: 18, pm10: 30, co2: 360, no2: 8, status: 'good', timestamp: new Date().toISOString() },
-    kurunegala_5: { id: 'AQ-010', location: 'Kurunegala - Bus Stand', aqi: 92, pm25: 38, pm10: 58, co2: 430, no2: 16, status: 'moderate', timestamp: new Date().toISOString() }
-  },
-  
-  fleet: {
-    bus1: { id: 'BUS-001', type: 'Bus', route: 'Colombo-Kandy', status: 'moving', speed: 45, lat: 7.2906, lng: 80.6337, passengers: 32, driver: 'Mr. Perera', timestamp: new Date().toISOString() },
-    bus2: { id: 'BUS-002', type: 'Bus', route: 'Colombo-Galle', status: 'stopped', speed: 0, lat: 6.0322, lng: 80.2168, passengers: 28, driver: 'Mr. Silva', timestamp: new Date().toISOString() },
-    bus3: { id: 'BUS-003', type: 'Bus', route: 'Kandy-Jaffna', status: 'moving', speed: 38, lat: 8.3114, lng: 80.4037, passengers: 25, driver: 'Mr. Kumar', timestamp: new Date().toISOString() },
-    bus4: { id: 'BUS-004', type: 'Bus', route: 'Colombo-Negombo', status: 'moving', speed: 52, lat: 7.2086, lng: 79.8357, passengers: 18, driver: 'Ms. Fernando', timestamp: new Date().toISOString() },
-    bus5: { id: 'BUS-005', type: 'Bus', route: 'Kurunegala-Colombo', status: 'moving', speed: 42, lat: 7.4863, lng: 80.3647, passengers: 30, driver: 'Mr. Bandara', timestamp: new Date().toISOString() },
-    bus6: { id: 'BUS-006', type: 'Bus', route: 'Kurunegala-Kandy', status: 'moving', speed: 35, lat: 7.4670, lng: 80.6234, passengers: 22, driver: 'Mr. Weerasinghe', timestamp: new Date().toISOString() },
-    truck1: { id: 'TRK-001', type: 'Truck', route: 'Colombo-Kandy', status: 'moving', speed: 30, lat: 7.0877, lng: 79.9925, passengers: 0, driver: 'Mr. Jayasuriya', timestamp: new Date().toISOString() },
-    truck2: { id: 'TRK-002', type: 'Truck', route: 'Kurunegala-Colombo', status: 'moving', speed: 28, lat: 7.5755, lng: 79.7951, passengers: 0, driver: 'Mr. Fernando', timestamp: new Date().toISOString() },
-    van1: { id: 'VAN-001', type: 'Van', route: 'Colombo-Galle', status: 'idle', speed: 0, lat: 6.8409, lng: 79.8750, passengers: 12, driver: 'Mr. Rathnayake', timestamp: new Date().toISOString() },
-    van2: { id: 'VAN-002', type: 'Van', route: 'Kurunegala-Anuradhapura', status: 'moving', speed: 48, lat: 8.0362, lng: 79.8352, passengers: 8, driver: 'Ms. Kumari', timestamp: new Date().toISOString() }
-  }
-};
-
-// Store previous states
-let previousStates = JSON.parse(JSON.stringify(trafficLights));
-let previousIotData = JSON.parse(JSON.stringify(iotData));
-
-// WebSocket clients
-const clients = new Set();
-
-// Broadcast update to all clients
-function broadcastUpdate(data) {
-  const message = JSON.stringify(data);
-  clients.forEach(client => {
-    if (client.readyState === 1) { // WebSocket.OPEN
-      client.send(message);
-    }
-  });
-}
-
-// Update traffic lights with proper paired directional control - FIXED VERSION
+// Update traffic lights with SINGLE PHASE state machine - FIXED
 function updateTrafficLights() {
   const locations = Object.keys(trafficLights);
   const changes = [];
@@ -591,48 +548,42 @@ function updateTrafficLights() {
     }
   });
   
-  // Update each location's paired directions
+  // Update each location using SINGLE PHASE state machine
   locations.forEach(location => {
     // Skip if emergency override is active
     if (emergencyOverrides[location]) return;
     
     const cityLights = trafficLights[location];
+    const currentPhase = cityLights.phase;
+    const phaseTimer = cityLights.phaseTimer || 0;
     
-    // Get the current status of vertical pair (up + down)
-    const verticalStatus = cityLights.directions.up ? cityLights.directions.up.status : 'green';
-    const verticalTimer = cityLights.directions.up ? cityLights.directions.up.timer : 60;
+    // Decrement phase timer
+    cityLights.phaseTimer -= 1;
     
-    // Get the current status of horizontal pair (left + right)
-    const horizontalStatus = cityLights.directions.left ? cityLights.directions.left.status : 'red';
-    const horizontalTimer = cityLights.directions.left ? cityLights.directions.left.timer : 30;
-    
-    // Determine which pair is active (green) and which is inactive
-    // Vertical pair (up + down) controls North/South traffic
-    // Horizontal pair (left + right) controls East/West traffic
-    
-    // Check if vertical pair timer has expired (using up direction timer)
-    if (cityLights.directions.up) {
-      cityLights.directions.up.timer -= 1;
-      cityLights.directions.down.timer -= 1;
+    // Check if phase timer expired
+    if (cityLights.phaseTimer <= 0) {
+      let oldStatus = '';
+      let newPhase = '';
+      let newTimer = 0;
       
-      if (cityLights.directions.up.timer <= 0) {
-        // Vertical pair timer expired - switch
-        const oldVerticalStatus = cityLights.directions.up.status;
-        
-        if (cityLights.directions.up.status === 'green') {
-          // Green -> Yellow for vertical
+      // Phase transitions - SINGLE STATE MACHINE
+      switch (currentPhase) {
+        case 'vertical-green':
+          // Vertical Green -> Vertical Yellow
+          oldStatus = 'green';
+          newPhase = 'vertical-yellow';
+          newTimer = 5;
+          
+          // Update directions
           cityLights.directions.up.status = 'yellow';
           cityLights.directions.up.timer = 5;
           cityLights.directions.down.status = 'yellow';
           cityLights.directions.down.timer = 5;
-          
           // Horizontal stays red
-          if (cityLights.directions.left && cityLights.directions.left.status !== 'red') {
-            cityLights.directions.left.status = 'red';
-            cityLights.directions.left.timer = 30;
-            cityLights.directions.right.status = 'red';
-            cityLights.directions.right.timer = 30;
-          }
+          cityLights.directions.left.status = 'red';
+          cityLights.directions.left.timer = 30;
+          cityLights.directions.right.status = 'red';
+          cityLights.directions.right.timer = 30;
           
           changes.push({
             location: location,
@@ -641,16 +592,23 @@ function updateTrafficLights() {
             newStatus: 'yellow',
             timer: 5,
             city: cityLights.city,
-            province: cityLights.province
+            province: cityLights.province,
+            phase: 'vertical-yellow'
           });
+          break;
           
-        } else if (cityLights.directions.up.status === 'yellow') {
-          // Yellow -> Red for vertical, Green for horizontal
+        case 'vertical-yellow':
+          // Vertical Yellow -> Horizontal Green
+          oldStatus = 'yellow';
+          newPhase = 'horizontal-green';
+          newTimer = 60;
+          
+          // Vertical to red
           cityLights.directions.up.status = 'red';
           cityLights.directions.up.timer = 30;
           cityLights.directions.down.status = 'red';
           cityLights.directions.down.timer = 30;
-          
+          // Horizontal to green
           cityLights.directions.left.status = 'green';
           cityLights.directions.left.timer = 60;
           cityLights.directions.right.status = 'green';
@@ -663,7 +621,8 @@ function updateTrafficLights() {
             newStatus: 'red',
             timer: 30,
             city: cityLights.city,
-            province: cityLights.province
+            province: cityLights.province,
+            phase: 'horizontal-green'
           });
           changes.push({
             location: location,
@@ -672,58 +631,27 @@ function updateTrafficLights() {
             newStatus: 'green',
             timer: 60,
             city: cityLights.city,
-            province: cityLights.province
+            province: cityLights.province,
+            phase: 'horizontal-green'
           });
+          break;
           
-        } else if (cityLights.directions.up.status === 'red') {
-          // Red -> Green for vertical (should not happen here, handled by horizontal)
-          // This is a safety fallback
-          cityLights.directions.up.status = 'green';
-          cityLights.directions.up.timer = 60;
-          cityLights.directions.down.status = 'green';
-          cityLights.directions.down.timer = 60;
+        case 'horizontal-green':
+          // Horizontal Green -> Horizontal Yellow
+          oldStatus = 'green';
+          newPhase = 'horizontal-yellow';
+          newTimer = 5;
           
-          cityLights.directions.left.status = 'red';
-          cityLights.directions.left.timer = 30;
-          cityLights.directions.right.status = 'red';
-          cityLights.directions.right.timer = 30;
-          
-          changes.push({
-            location: location,
-            direction: 'vertical',
-            oldStatus: 'red',
-            newStatus: 'green',
-            timer: 60,
-            city: cityLights.city,
-            province: cityLights.province
-          });
-        }
-      }
-    }
-    
-    // Check if horizontal pair timer has expired (using left direction timer)
-    if (cityLights.directions.left && cityLights.directions.left.status === 'green') {
-      cityLights.directions.left.timer -= 1;
-      cityLights.directions.right.timer -= 1;
-      
-      if (cityLights.directions.left.timer <= 0) {
-        // Horizontal pair timer expired - switch
-        const oldHorizontalStatus = cityLights.directions.left.status;
-        
-        if (cityLights.directions.left.status === 'green') {
-          // Green -> Yellow for horizontal
+          // Horizontal to yellow
           cityLights.directions.left.status = 'yellow';
           cityLights.directions.left.timer = 5;
           cityLights.directions.right.status = 'yellow';
           cityLights.directions.right.timer = 5;
-          
           // Vertical stays red
-          if (cityLights.directions.up && cityLights.directions.up.status !== 'red') {
-            cityLights.directions.up.status = 'red';
-            cityLights.directions.up.timer = 30;
-            cityLights.directions.down.status = 'red';
-            cityLights.directions.down.timer = 30;
-          }
+          cityLights.directions.up.status = 'red';
+          cityLights.directions.up.timer = 30;
+          cityLights.directions.down.status = 'red';
+          cityLights.directions.down.timer = 30;
           
           changes.push({
             location: location,
@@ -732,16 +660,23 @@ function updateTrafficLights() {
             newStatus: 'yellow',
             timer: 5,
             city: cityLights.city,
-            province: cityLights.province
+            province: cityLights.province,
+            phase: 'horizontal-yellow'
           });
+          break;
           
-        } else if (cityLights.directions.left.status === 'yellow') {
-          // Yellow -> Red for horizontal, Green for vertical
+        case 'horizontal-yellow':
+          // Horizontal Yellow -> Vertical Green
+          oldStatus = 'yellow';
+          newPhase = 'vertical-green';
+          newTimer = 60;
+          
+          // Horizontal to red
           cityLights.directions.left.status = 'red';
           cityLights.directions.left.timer = 30;
           cityLights.directions.right.status = 'red';
           cityLights.directions.right.timer = 30;
-          
+          // Vertical to green
           cityLights.directions.up.status = 'green';
           cityLights.directions.up.timer = 60;
           cityLights.directions.down.status = 'green';
@@ -754,7 +689,8 @@ function updateTrafficLights() {
             newStatus: 'red',
             timer: 30,
             city: cityLights.city,
-            province: cityLights.province
+            province: cityLights.province,
+            phase: 'vertical-green'
           });
           changes.push({
             location: location,
@@ -763,10 +699,40 @@ function updateTrafficLights() {
             newStatus: 'green',
             timer: 60,
             city: cityLights.city,
-            province: cityLights.province
+            province: cityLights.province,
+            phase: 'vertical-green'
           });
-        }
+          break;
+          
+        default:
+          // Fallback - default to vertical green
+          newPhase = 'vertical-green';
+          newTimer = 60;
+          cityLights.directions.up.status = 'green';
+          cityLights.directions.up.timer = 60;
+          cityLights.directions.down.status = 'green';
+          cityLights.directions.down.timer = 60;
+          cityLights.directions.left.status = 'red';
+          cityLights.directions.left.timer = 30;
+          cityLights.directions.right.status = 'red';
+          cityLights.directions.right.timer = 30;
+          break;
       }
+      
+      // Update phase
+      cityLights.phase = newPhase;
+      cityLights.phaseTimer = newTimer;
+      
+    } else {
+      // Timer not expired - just update the timer display in directions
+      // (The actual statuses remain the same, only timers decrease)
+      const directions = ['up', 'down', 'left', 'right'];
+      directions.forEach(dir => {
+        if (cityLights.directions[dir]) {
+          // Decrement timer for display purposes
+          cityLights.directions[dir].timer = Math.max(0, cityLights.directions[dir].timer - 1);
+        }
+      });
     }
   });
   
@@ -909,8 +875,6 @@ module.exports = {
   getCityDirections,
   getDirectionStatus,
   setDirectionStatus,
-  setPairedDirections,
-  getPairStatus,
   resetCityToOriginalState,
   calculateStats
 };
