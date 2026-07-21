@@ -43,8 +43,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 55,
     directions: {
-      up: { status: 'yellow', timer: 5 },
-      down: { status: 'yellow', timer: 5 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 55 },
       right: { status: 'green', timer: 55 }
     }
@@ -59,8 +59,8 @@ const trafficLights = {
     directions: {
       up: { status: 'green', timer: 45 },
       down: { status: 'green', timer: 45 },
-      left: { status: 'red', timer: 32 },
-      right: { status: 'red', timer: 32 }
+      left: { status: 'red', timer: 30 },
+      right: { status: 'red', timer: 30 }
     }
   },
   
@@ -71,8 +71,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 48,
     directions: {
-      up: { status: 'red', timer: 35 },
-      down: { status: 'red', timer: 35 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 48 },
       right: { status: 'green', timer: 48 }
     }
@@ -99,8 +99,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 45,
     directions: {
-      up: { status: 'yellow', timer: 8 },
-      down: { status: 'yellow', timer: 8 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 45 },
       right: { status: 'green', timer: 45 }
     }
@@ -113,8 +113,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 52,
     directions: {
-      up: { status: 'red', timer: 25 },
-      down: { status: 'red', timer: 25 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 52 },
       right: { status: 'green', timer: 52 }
     }
@@ -129,8 +129,8 @@ const trafficLights = {
     directions: {
       up: { status: 'green', timer: 55 },
       down: { status: 'green', timer: 55 },
-      left: { status: 'red', timer: 32 },
-      right: { status: 'red', timer: 32 }
+      left: { status: 'red', timer: 30 },
+      right: { status: 'red', timer: 30 }
     }
   },
   
@@ -165,8 +165,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 48,
     directions: {
-      up: { status: 'yellow', timer: 8 },
-      down: { status: 'yellow', timer: 8 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 48 },
       right: { status: 'green', timer: 48 }
     }
@@ -179,8 +179,8 @@ const trafficLights = {
     directions: {
       up: { status: 'green', timer: 50 },
       down: { status: 'green', timer: 50 },
-      left: { status: 'red', timer: 32 },
-      right: { status: 'red', timer: 32 }
+      left: { status: 'red', timer: 30 },
+      right: { status: 'red', timer: 30 }
     }
   },
   kurunegala_5: {
@@ -189,8 +189,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 35 },
-      down: { status: 'red', timer: 35 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 45 },
       right: { status: 'green', timer: 45 }
     }
@@ -203,8 +203,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 55,
     directions: {
-      up: { status: 'red', timer: 40 },
-      down: { status: 'red', timer: 40 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 55 },
       right: { status: 'green', timer: 55 }
     }
@@ -231,8 +231,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 50,
     directions: {
-      up: { status: 'yellow', timer: 7 },
-      down: { status: 'yellow', timer: 7 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 50 },
       right: { status: 'green', timer: 50 }
     }
@@ -245,8 +245,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 52,
     directions: {
-      up: { status: 'red', timer: 32 },
-      down: { status: 'red', timer: 32 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 52 },
       right: { status: 'green', timer: 52 }
     }
@@ -261,8 +261,8 @@ const trafficLights = {
     directions: {
       up: { status: 'green', timer: 42 },
       down: { status: 'green', timer: 42 },
-      left: { status: 'red', timer: 35 },
-      right: { status: 'red', timer: 35 }
+      left: { status: 'red', timer: 30 },
+      right: { status: 'red', timer: 30 }
     }
   },
   
@@ -273,8 +273,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 48,
     directions: {
-      up: { status: 'yellow', timer: 9 },
-      down: { status: 'yellow', timer: 9 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 48 },
       right: { status: 'green', timer: 48 }
     }
@@ -289,8 +289,8 @@ const trafficLights = {
     directions: {
       up: { status: 'green', timer: 38 },
       down: { status: 'green', timer: 38 },
-      left: { status: 'red', timer: 32 },
-      right: { status: 'red', timer: 32 }
+      left: { status: 'red', timer: 30 },
+      right: { status: 'red', timer: 30 }
     }
   },
   
@@ -301,8 +301,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 52,
     directions: {
-      up: { status: 'red', timer: 28 },
-      down: { status: 'red', timer: 28 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 52 },
       right: { status: 'green', timer: 52 }
     }
@@ -329,8 +329,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 45,
     directions: {
-      up: { status: 'yellow', timer: 10 },
-      down: { status: 'yellow', timer: 10 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 45 },
       right: { status: 'green', timer: 45 }
     }
@@ -343,8 +343,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 48,
     directions: {
-      up: { status: 'red', timer: 33 },
-      down: { status: 'red', timer: 33 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 48 },
       right: { status: 'green', timer: 48 }
     }
@@ -371,8 +371,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 50,
     directions: {
-      up: { status: 'yellow', timer: 7 },
-      down: { status: 'yellow', timer: 7 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 50 },
       right: { status: 'green', timer: 50 }
     }
@@ -385,8 +385,8 @@ const trafficLights = {
     phase: 'horizontal-green',
     phaseTimer: 48,
     directions: {
-      up: { status: 'red', timer: 36 },
-      down: { status: 'red', timer: 36 },
+      up: { status: 'red', timer: 30 },
+      down: { status: 'red', timer: 30 },
       left: { status: 'green', timer: 48 },
       right: { status: 'green', timer: 48 }
     }
@@ -428,7 +428,7 @@ function initializeOriginalStates() {
 initializeOriginalStates();
 
 // ============================================
-// IOT SENSORS DATA - DEFINED BEFORE USE
+// IOT SENSORS DATA
 // ============================================
 const iotData = {
   cameras: {
@@ -553,11 +553,24 @@ function resetCityToOriginalState(location) {
   
   // Also restore phase based on original statuses
   const upStatus = trafficLights[location].directions.up?.status || 'green';
-  if (upStatus === 'green' || upStatus === 'yellow') {
-    trafficLights[location].phase = upStatus === 'green' ? 'vertical-green' : 'vertical-yellow';
+  if (upStatus === 'green') {
+    trafficLights[location].phase = 'vertical-green';
+    trafficLights[location].phaseTimer = 60;
+  } else if (upStatus === 'yellow') {
+    trafficLights[location].phase = 'vertical-yellow';
+    trafficLights[location].phaseTimer = 5;
   } else {
     const leftStatus = trafficLights[location].directions.left?.status || 'green';
-    trafficLights[location].phase = leftStatus === 'green' ? 'horizontal-green' : 'horizontal-yellow';
+    if (leftStatus === 'green') {
+      trafficLights[location].phase = 'horizontal-green';
+      trafficLights[location].phaseTimer = 60;
+    } else if (leftStatus === 'yellow') {
+      trafficLights[location].phase = 'horizontal-yellow';
+      trafficLights[location].phaseTimer = 5;
+    } else {
+      trafficLights[location].phase = 'vertical-green';
+      trafficLights[location].phaseTimer = 60;
+    }
   }
   
   return true;
@@ -641,22 +654,19 @@ function updateTrafficLights() {
     
     const cityLights = trafficLights[location];
     const currentPhase = cityLights.phase;
-    const phaseTimer = cityLights.phaseTimer || 0;
     
     // Decrement phase timer
     cityLights.phaseTimer -= 1;
     
     // Check if phase timer expired
     if (cityLights.phaseTimer <= 0) {
-      let oldStatus = '';
       let newPhase = '';
       let newTimer = 0;
       
       // Phase transitions - SINGLE STATE MACHINE
       switch (currentPhase) {
         case 'vertical-green':
-          // Vertical Green -> Vertical Yellow
-          oldStatus = 'green';
+          // Vertical Green -> Vertical Yellow (5 seconds)
           newPhase = 'vertical-yellow';
           newTimer = 5;
           
@@ -684,8 +694,7 @@ function updateTrafficLights() {
           break;
           
         case 'vertical-yellow':
-          // Vertical Yellow -> Horizontal Green
-          oldStatus = 'yellow';
+          // Vertical Yellow -> Horizontal Green (60 seconds)
           newPhase = 'horizontal-green';
           newTimer = 60;
           
@@ -723,8 +732,7 @@ function updateTrafficLights() {
           break;
           
         case 'horizontal-green':
-          // Horizontal Green -> Horizontal Yellow
-          oldStatus = 'green';
+          // Horizontal Green -> Horizontal Yellow (5 seconds)
           newPhase = 'horizontal-yellow';
           newTimer = 5;
           
@@ -752,8 +760,7 @@ function updateTrafficLights() {
           break;
           
         case 'horizontal-yellow':
-          // Horizontal Yellow -> Vertical Green
-          oldStatus = 'yellow';
+          // Horizontal Yellow -> Vertical Green (60 seconds)
           newPhase = 'vertical-green';
           newTimer = 60;
           
@@ -805,17 +812,15 @@ function updateTrafficLights() {
           break;
       }
       
-      // Update phase
+      // Update phase and timer
       cityLights.phase = newPhase;
       cityLights.phaseTimer = newTimer;
-      
     } else {
       // Timer not expired - just update the timer display in directions
-      // (The actual statuses remain the same, only timers decrease)
       const directions = ['up', 'down', 'left', 'right'];
       directions.forEach(dir => {
         if (cityLights.directions[dir]) {
-          // Decrement timer for display purposes
+          // Decrement timer for display
           cityLights.directions[dir].timer = Math.max(0, cityLights.directions[dir].timer - 1);
         }
       });
