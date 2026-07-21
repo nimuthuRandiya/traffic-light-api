@@ -1,394 +1,40 @@
-// ============================================
-// උසස් දිශා පාලන ට්‍රැෆික් ලයිට් පද්ධතිය
-// සෑම දිශාවක්ම තනි තනිව පාලනය කිරීම
-// ============================================
-
-// හදිසි පාලන ගබඩාව
+// Emergency overrides storage
 let emergencyOverrides = {};
 
-// හදිසි ප්‍රතිසාධනය සඳහා මුල් තත්ව ගබඩා කිරීම
-const ORIGINAL_TIMERS = {};
-const ORIGINAL_STATUSES = {};
-
-// ============================================
-// ශ්‍රී ලංකා නගර සඳහා ට්‍රැෆික් ලයිට් තත්ව කළමනාකරණය
-// සෑම දිශාවකටම වෙන වෙනම පාලනය
-// ============================================
+// Traffic light state management for all Sri Lankan cities
 const trafficLights = {
-  colombo: {
-    city: 'Colombo',
-    province: 'Western',
-    phase: 'vertical-green',
-    phaseTimer: 90,
-    directions: {
-      up: { status: 'green', timer: 90 },
-      down: { status: 'red', timer: 90 },    // up green, down red
-      left: { status: 'red', timer: 90 },
-      right: { status: 'red', timer: 90 }
-    }
-  },
-  kandy: {
-    city: 'Kandy',
-    province: 'Central',
-    phase: 'horizontal-green',
-    phaseTimer: 75,
-    directions: {
-      up: { status: 'red', timer: 75 },
-      down: { status: 'red', timer: 75 },
-      left: { status: 'green', timer: 75 },
-      right: { status: 'green', timer: 75 }
-    }
-  },
-  galle: {
-    city: 'Galle',
-    province: 'Southern',
-    phase: 'horizontal-green',
-    phaseTimer: 70,
-    directions: {
-      up: { status: 'red', timer: 70 },
-      down: { status: 'red', timer: 70 },
-      left: { status: 'green', timer: 70 },
-      right: { status: 'green', timer: 70 }
-    }
-  },
-  negombo: {
-    city: 'Negombo',
-    province: 'Western',
-    phase: 'vertical-green',
-    phaseTimer: 85,
-    directions: {
-      up: { status: 'green', timer: 85 },
-      down: { status: 'red', timer: 85 },    // up green, down red
-      left: { status: 'red', timer: 85 },
-      right: { status: 'red', timer: 85 }
-    }
-  },
-  jaffna: {
-    city: 'Jaffna',
-    province: 'Northern',
-    phase: 'horizontal-green',
-    phaseTimer: 65,
-    directions: {
-      up: { status: 'red', timer: 65 },
-      down: { status: 'red', timer: 65 },
-      left: { status: 'green', timer: 65 },
-      right: { status: 'green', timer: 65 }
-    }
-  },
-  anuradhapura: {
-    city: 'Anuradhapura',
-    province: 'North Central',
-    phase: 'vertical-green',
-    phaseTimer: 80,
-    directions: {
-      up: { status: 'green', timer: 80 },
-      down: { status: 'red', timer: 80 },
-      left: { status: 'red', timer: 80 },
-      right: { status: 'red', timer: 80 }
-    }
-  },
-  polonnaruwa: {
-    city: 'Polonnaruwa',
-    province: 'North Central',
-    phase: 'horizontal-green',
-    phaseTimer: 60,
-    directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
-    }
-  },
-  badulla: {
-    city: 'Badulla',
-    province: 'Uva',
-    phase: 'horizontal-green',
-    phaseTimer: 70,
-    directions: {
-      up: { status: 'red', timer: 70 },
-      down: { status: 'red', timer: 70 },
-      left: { status: 'green', timer: 70 },
-      right: { status: 'green', timer: 70 }
-    }
-  },
-  ratnapura: {
-    city: 'Ratnapura',
-    province: 'Sabaragamuwa',
-    phase: 'vertical-green',
-    phaseTimer: 75,
-    directions: {
-      up: { status: 'green', timer: 75 },
-      down: { status: 'red', timer: 75 },
-      left: { status: 'red', timer: 75 },
-      right: { status: 'red', timer: 75 }
-    }
-  },
-  kurunegala_1: {
-    city: 'Kurunegala - Main',
-    province: 'North Western',
-    phase: 'vertical-green',
-    phaseTimer: 90,
-    directions: {
-      up: { status: 'green', timer: 90 },
-      down: { status: 'red', timer: 90 },
-      left: { status: 'red', timer: 90 },
-      right: { status: 'red', timer: 90 }
-    }
-  },
-  kurunegala_2: {
-    city: 'Kurunegala - Town Hall',
-    province: 'North Western',
-    phase: 'horizontal-green',
-    phaseTimer: 60,
-    directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
-    }
-  },
-  kurunegala_3: {
-    city: 'Kurunegala - Railway',
-    province: 'North Western',
-    phase: 'horizontal-green',
-    phaseTimer: 65,
-    directions: {
-      up: { status: 'red', timer: 65 },
-      down: { status: 'red', timer: 65 },
-      left: { status: 'green', timer: 65 },
-      right: { status: 'green', timer: 65 }
-    }
-  },
-  kurunegala_4: {
-    city: 'Kurunegala - Hospital',
-    province: 'North Western',
-    phase: 'vertical-green',
-    phaseTimer: 70,
-    directions: {
-      up: { status: 'green', timer: 70 },
-      down: { status: 'red', timer: 70 },
-      left: { status: 'red', timer: 70 },
-      right: { status: 'red', timer: 70 }
-    }
-  },
-  kurunegala_5: {
-    city: 'Kurunegala - Bus Stand',
-    province: 'North Western',
-    phase: 'horizontal-green',
-    phaseTimer: 80,
-    directions: {
-      up: { status: 'red', timer: 80 },
-      down: { status: 'red', timer: 80 },
-      left: { status: 'green', timer: 80 },
-      right: { status: 'green', timer: 80 }
-    }
-  },
-  matara: {
-    city: 'Matara',
-    province: 'Southern',
-    phase: 'horizontal-green',
-    phaseTimer: 65,
-    directions: {
-      up: { status: 'red', timer: 65 },
-      down: { status: 'red', timer: 65 },
-      left: { status: 'green', timer: 65 },
-      right: { status: 'green', timer: 65 }
-    }
-  },
-  batticaloa: {
-    city: 'Batticaloa',
-    province: 'Eastern',
-    phase: 'vertical-green',
-    phaseTimer: 75,
-    directions: {
-      up: { status: 'green', timer: 75 },
-      down: { status: 'red', timer: 75 },
-      left: { status: 'red', timer: 75 },
-      right: { status: 'red', timer: 75 }
-    }
-  },
-  trincomalee: {
-    city: 'Trincomalee',
-    province: 'Eastern',
-    phase: 'horizontal-green',
-    phaseTimer: 60,
-    directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
-    }
-  },
-  kalutara: {
-    city: 'Kalutara',
-    province: 'Western',
-    phase: 'horizontal-green',
-    phaseTimer: 70,
-    directions: {
-      up: { status: 'red', timer: 70 },
-      down: { status: 'red', timer: 70 },
-      left: { status: 'green', timer: 70 },
-      right: { status: 'green', timer: 70 }
-    }
-  },
-  avissawella: {
-    city: 'Avissawella',
-    province: 'Western',
-    phase: 'vertical-green',
-    phaseTimer: 80,
-    directions: {
-      up: { status: 'green', timer: 80 },
-      down: { status: 'red', timer: 80 },
-      left: { status: 'red', timer: 80 },
-      right: { status: 'red', timer: 80 }
-    }
-  },
-  gampaha: {
-    city: 'Gampaha',
-    province: 'Western',
-    phase: 'horizontal-green',
-    phaseTimer: 65,
-    directions: {
-      up: { status: 'red', timer: 65 },
-      down: { status: 'red', timer: 65 },
-      left: { status: 'green', timer: 65 },
-      right: { status: 'green', timer: 65 }
-    }
-  },
-  matale: {
-    city: 'Matale',
-    province: 'Central',
-    phase: 'vertical-green',
-    phaseTimer: 70,
-    directions: {
-      up: { status: 'green', timer: 70 },
-      down: { status: 'red', timer: 70 },
-      left: { status: 'red', timer: 70 },
-      right: { status: 'red', timer: 70 }
-    }
-  },
-  nugegoda: {
-    city: 'Nugegoda',
-    province: 'Western',
-    phase: 'horizontal-green',
-    phaseTimer: 75,
-    directions: {
-      up: { status: 'red', timer: 75 },
-      down: { status: 'red', timer: 75 },
-      left: { status: 'green', timer: 75 },
-      right: { status: 'green', timer: 75 }
-    }
-  },
-  moratuwa: {
-    city: 'Moratuwa',
-    province: 'Western',
-    phase: 'vertical-green',
-    phaseTimer: 80,
-    directions: {
-      up: { status: 'green', timer: 80 },
-      down: { status: 'red', timer: 80 },
-      left: { status: 'red', timer: 80 },
-      right: { status: 'red', timer: 80 }
-    }
-  },
-  dehiwala: {
-    city: 'Dehiwala',
-    province: 'Western',
-    phase: 'horizontal-green',
-    phaseTimer: 60,
-    directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
-    }
-  },
-  mountlavinia: {
-    city: 'Mount Lavinia',
-    province: 'Western',
-    phase: 'horizontal-green',
-    phaseTimer: 65,
-    directions: {
-      up: { status: 'red', timer: 65 },
-      down: { status: 'red', timer: 65 },
-      left: { status: 'green', timer: 65 },
-      right: { status: 'green', timer: 65 }
-    }
-  },
-  chilaw: {
-    city: 'Chilaw',
-    province: 'North Western',
-    phase: 'vertical-green',
-    phaseTimer: 75,
-    directions: {
-      up: { status: 'green', timer: 75 },
-      down: { status: 'red', timer: 75 },
-      left: { status: 'red', timer: 75 },
-      right: { status: 'red', timer: 75 }
-    }
-  },
-  puttalam: {
-    city: 'Puttalam',
-    province: 'North Western',
-    phase: 'horizontal-green',
-    phaseTimer: 60,
-    directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
-    }
-  },
-  homagama: {
-    city: 'Homagama',
-    province: 'Western',
-    phase: 'horizontal-green',
-    phaseTimer: 70,
-    directions: {
-      up: { status: 'red', timer: 70 },
-      down: { status: 'red', timer: 70 },
-      left: { status: 'green', timer: 70 },
-      right: { status: 'green', timer: 70 }
-    }
-  },
-  maharagama: {
-    city: 'Maharagama',
-    province: 'Western',
-    phase: 'vertical-green',
-    phaseTimer: 85,
-    directions: {
-      up: { status: 'green', timer: 85 },
-      down: { status: 'red', timer: 85 },
-      left: { status: 'red', timer: 85 },
-      right: { status: 'red', timer: 85 }
-    }
-  }
+  colombo: { status: 'green', timer: 60, city: 'Colombo', province: 'Western' },
+  kandy: { status: 'red', timer: 30, city: 'Kandy', province: 'Central' },
+  galle: { status: 'yellow', timer: 5, city: 'Galle', province: 'Southern' },
+  negombo: { status: 'green', timer: 45, city: 'Negombo', province: 'Western' },
+  jaffna: { status: 'red', timer: 35, city: 'Jaffna', province: 'Northern' },
+  anuradhapura: { status: 'green', timer: 50, city: 'Anuradhapura', province: 'North Central' },
+  polonnaruwa: { status: 'yellow', timer: 8, city: 'Polonnaruwa', province: 'North Central' },
+  badulla: { status: 'red', timer: 25, city: 'Badulla', province: 'Uva' },
+  ratnapura: { status: 'green', timer: 55, city: 'Ratnapura', province: 'Sabaragamuwa' },
+  kurunegala_1: { status: 'green', timer: 45, city: 'Kurunegala - Main', province: 'North Western' },
+  kurunegala_2: { status: 'red', timer: 30, city: 'Kurunegala - Town Hall', province: 'North Western' },
+  kurunegala_3: { status: 'yellow', timer: 8, city: 'Kurunegala - Railway', province: 'North Western' },
+  kurunegala_4: { status: 'green', timer: 50, city: 'Kurunegala - Hospital', province: 'North Western' },
+  kurunegala_5: { status: 'red', timer: 35, city: 'Kurunegala - Bus Stand', province: 'North Western' },
+  matara: { status: 'red', timer: 40, city: 'Matara', province: 'Southern' },
+  batticaloa: { status: 'green', timer: 48, city: 'Batticaloa', province: 'Eastern' },
+  trincomalee: { status: 'yellow', timer: 7, city: 'Trincomalee', province: 'Eastern' },
+  kalutara: { status: 'red', timer: 32, city: 'Kalutara', province: 'Western' },
+  avissawella: { status: 'green', timer: 42, city: 'Avissawella', province: 'Western' },
+  gampaha: { status: 'yellow', timer: 9, city: 'Gampaha', province: 'Western' },
+  matale: { status: 'green', timer: 38, city: 'Matale', province: 'Central' },
+  nugegoda: { status: 'red', timer: 28, city: 'Nugegoda', province: 'Western' },
+  moratuwa: { status: 'green', timer: 52, city: 'Moratuwa', province: 'Western' },
+  dehiwala: { status: 'yellow', timer: 10, city: 'Dehiwala', province: 'Western' },
+  mountlavinia: { status: 'red', timer: 33, city: 'Mount Lavinia', province: 'Western' },
+  chilaw: { status: 'green', timer: 44, city: 'Chilaw', province: 'North Western' },
+  puttalam: { status: 'yellow', timer: 7, city: 'Puttalam', province: 'North Western' },
+  homagama: { status: 'red', timer: 36, city: 'Homagama', province: 'Western' },
+  maharagama: { status: 'green', timer: 49, city: 'Maharagama', province: 'Western' }
 };
 
-// ============================================
-// මුල් තත්ව ආරම්භ කිරීම
-// ============================================
-function initializeOriginalStates() {
-  Object.keys(trafficLights).forEach(location => {
-    if (!ORIGINAL_TIMERS[location]) ORIGINAL_TIMERS[location] = {};
-    if (!ORIGINAL_STATUSES[location]) ORIGINAL_STATUSES[location] = {};
-    
-    const directions = ['up', 'down', 'left', 'right'];
-    directions.forEach(dir => {
-      const light = trafficLights[location].directions[dir];
-      if (light) {
-        ORIGINAL_TIMERS[location][dir] = light.timer;
-        ORIGINAL_STATUSES[location][dir] = light.status;
-      }
-    });
-  });
-}
-
-initializeOriginalStates();
-
-// ============================================
-// IoT සංවේදක දත්ත
-// ============================================
+// IoT Sensors Data
 const iotData = {
   cameras: {
     colombo: { id: 'CAM-001', location: 'Colombo', status: 'active', vehiclesDetected: 45, pedestrians: 12, timestamp: new Date().toISOString() },
@@ -402,6 +48,7 @@ const iotData = {
     kurunegala_4: { id: 'CAM-009', location: 'Kurunegala - Hospital', status: 'active', vehiclesDetected: 31, pedestrians: 13, timestamp: new Date().toISOString() },
     kurunegala_5: { id: 'CAM-010', location: 'Kurunegala - Bus Stand', status: 'active', vehiclesDetected: 48, pedestrians: 18, timestamp: new Date().toISOString() }
   },
+  
   inductiveLoops: {
     colombo: { id: 'LOOP-001', location: 'Colombo', vehicleCount: 156, avgSpeed: 35, congestion: 'medium', timestamp: new Date().toISOString() },
     kandy: { id: 'LOOP-002', location: 'Kandy', vehicleCount: 89, avgSpeed: 42, congestion: 'low', timestamp: new Date().toISOString() },
@@ -414,6 +61,7 @@ const iotData = {
     kurunegala_4: { id: 'LOOP-009', location: 'Kurunegala - Hospital', vehicleCount: 65, avgSpeed: 44, congestion: 'low', timestamp: new Date().toISOString() },
     kurunegala_5: { id: 'LOOP-010', location: 'Kurunegala - Bus Stand', vehicleCount: 145, avgSpeed: 25, congestion: 'high', timestamp: new Date().toISOString() }
   },
+  
   airQuality: {
     colombo: { id: 'AQ-001', location: 'Colombo', aqi: 85, pm25: 35, pm10: 55, co2: 420, no2: 15, status: 'moderate', timestamp: new Date().toISOString() },
     kandy: { id: 'AQ-002', location: 'Kandy', aqi: 62, pm25: 22, pm10: 38, co2: 380, no2: 10, status: 'good', timestamp: new Date().toISOString() },
@@ -426,6 +74,7 @@ const iotData = {
     kurunegala_4: { id: 'AQ-009', location: 'Kurunegala - Hospital', aqi: 52, pm25: 18, pm10: 30, co2: 360, no2: 8, status: 'good', timestamp: new Date().toISOString() },
     kurunegala_5: { id: 'AQ-010', location: 'Kurunegala - Bus Stand', aqi: 92, pm25: 38, pm10: 58, co2: 430, no2: 16, status: 'moderate', timestamp: new Date().toISOString() }
   },
+  
   fleet: {
     bus1: { id: 'BUS-001', type: 'Bus', route: 'Colombo-Kandy', status: 'moving', speed: 45, lat: 7.2906, lng: 80.6337, passengers: 32, driver: 'Mr. Perera', timestamp: new Date().toISOString() },
     bus2: { id: 'BUS-002', type: 'Bus', route: 'Colombo-Galle', status: 'stopped', speed: 0, lat: 6.0322, lng: 80.2168, passengers: 28, driver: 'Mr. Silva', timestamp: new Date().toISOString() },
@@ -440,327 +89,67 @@ const iotData = {
   }
 };
 
+// Store previous states
 let previousStates = JSON.parse(JSON.stringify(trafficLights));
 let previousIotData = JSON.parse(JSON.stringify(iotData));
+
+// WebSocket clients
 const clients = new Set();
 
-// ============================================
-// සහායක ශ්‍රිත (ආරක්ෂිත පාලනය)
-// ============================================
-
-function getCityDirections(location) {
-  if (!trafficLights[location]) return null;
-  return trafficLights[location].directions;
-}
-
-function getDirectionStatus(location, direction) {
-  if (!trafficLights[location]) return null;
-  if (!trafficLights[location].directions[direction]) return null;
-  return trafficLights[location].directions[direction];
-}
-
-// ============================================
-// දිශා පාලන ශ්‍රිත - ගැටීම් සම්පූර්ණයෙන් වැළැක්වීම
-// ============================================
-function setDirectionStatus(location, direction, status, timer) {
-  if (!trafficLights[location]) return false;
-  if (!trafficLights[location].directions[direction]) return false;
-  
-  // ආරක්ෂිත පාලනය - එකම දිශාවකට පමණක් Green ලබා දීම
-  if (status === 'green') {
-    // වෙනත් සියලුම දිශා Red කිරීම
-    const allDirections = ['up', 'down', 'left', 'right'];
-    allDirections.forEach(dir => {
-      if (dir !== direction && trafficLights[location].directions[dir]) {
-        trafficLights[location].directions[dir].status = 'red';
-        if (timer !== undefined) {
-          trafficLights[location].directions[dir].timer = timer;
-        }
-      }
-    });
-  }
-  
-  trafficLights[location].directions[direction].status = status;
-  if (timer !== undefined) {
-    trafficLights[location].directions[direction].timer = timer;
-  }
-  return true;
-}
-
-// ============================================
-// විශේෂිත දිශා රටා පාලනය
-// ============================================
-
-// රටාව 1: Up Green, අනෙකුත් සියල්ල Red
-function setPatternUpGreen(location, timer) {
-  if (!trafficLights[location]) return false;
-  const dirs = trafficLights[location].directions;
-  dirs.up.status = 'green';
-  dirs.up.timer = timer || 60;
-  dirs.down.status = 'red';
-  dirs.down.timer = timer || 60;
-  dirs.left.status = 'red';
-  dirs.left.timer = timer || 60;
-  dirs.right.status = 'red';
-  dirs.right.timer = timer || 60;
-  return true;
-}
-
-// රටාව 2: Down Green, අනෙකුත් සියල්ල Red
-function setPatternDownGreen(location, timer) {
-  if (!trafficLights[location]) return false;
-  const dirs = trafficLights[location].directions;
-  dirs.up.status = 'red';
-  dirs.up.timer = timer || 60;
-  dirs.down.status = 'green';
-  dirs.down.timer = timer || 60;
-  dirs.left.status = 'red';
-  dirs.left.timer = timer || 60;
-  dirs.right.status = 'red';
-  dirs.right.timer = timer || 60;
-  return true;
-}
-
-// රටාව 3: Left Green, අනෙකුත් සියල්ල Red
-function setPatternLeftGreen(location, timer) {
-  if (!trafficLights[location]) return false;
-  const dirs = trafficLights[location].directions;
-  dirs.up.status = 'red';
-  dirs.up.timer = timer || 60;
-  dirs.down.status = 'red';
-  dirs.down.timer = timer || 60;
-  dirs.left.status = 'green';
-  dirs.left.timer = timer || 60;
-  dirs.right.status = 'red';
-  dirs.right.timer = timer || 60;
-  return true;
-}
-
-// රටාව 4: Right Green, අනෙකුත් සියල්ල Red
-function setPatternRightGreen(location, timer) {
-  if (!trafficLights[location]) return false;
-  const dirs = trafficLights[location].directions;
-  dirs.up.status = 'red';
-  dirs.up.timer = timer || 60;
-  dirs.down.status = 'red';
-  dirs.down.timer = timer || 60;
-  dirs.left.status = 'red';
-  dirs.left.timer = timer || 60;
-  dirs.right.status = 'green';
-  dirs.right.timer = timer || 60;
-  return true;
-}
-
-// රටාව 5: Vertical Pair (Up & Down) Green, Horizontal Red
-function setPatternVerticalGreen(location, timer) {
-  if (!trafficLights[location]) return false;
-  const dirs = trafficLights[location].directions;
-  dirs.up.status = 'green';
-  dirs.up.timer = timer || 60;
-  dirs.down.status = 'green';
-  dirs.down.timer = timer || 60;
-  dirs.left.status = 'red';
-  dirs.left.timer = timer || 60;
-  dirs.right.status = 'red';
-  dirs.right.timer = timer || 60;
-  return true;
-}
-
-// රටාව 6: Horizontal Pair (Left & Right) Green, Vertical Red
-function setPatternHorizontalGreen(location, timer) {
-  if (!trafficLights[location]) return false;
-  const dirs = trafficLights[location].directions;
-  dirs.up.status = 'red';
-  dirs.up.timer = timer || 60;
-  dirs.down.status = 'red';
-  dirs.down.timer = timer || 60;
-  dirs.left.status = 'green';
-  dirs.left.timer = timer || 60;
-  dirs.right.status = 'green';
-  dirs.right.timer = timer || 60;
-  return true;
-}
-
-// රටාව 7: All Red (හදිසි නැවතුම)
-function setPatternAllRed(location) {
-  if (!trafficLights[location]) return false;
-  const dirs = trafficLights[location].directions;
-  ['up', 'down', 'left', 'right'].forEach(dir => {
-    dirs[dir].status = 'red';
-    dirs[dir].timer = 0;
-  });
-  return true;
-}
-
-// ============================================
-// මුල් තත්වයට නැවත සැකසීම
-// ============================================
-function resetCityToOriginalState(location) {
-  if (!trafficLights[location]) return false;
-  if (!ORIGINAL_STATUSES[location]) return false;
-  
-  const directions = ['up', 'down', 'left', 'right'];
-  directions.forEach(dir => {
-    if (trafficLights[location].directions[dir]) {
-      trafficLights[location].directions[dir].status = ORIGINAL_STATUSES[location][dir] || 'green';
-      trafficLights[location].directions[dir].timer = ORIGINAL_TIMERS[location][dir] || 60;
-    }
-  });
-  
-  return true;
-}
-
+// Broadcast update to all clients
 function broadcastUpdate(data) {
   const message = JSON.stringify(data);
   clients.forEach(client => {
-    if (client.readyState === 1) {
+    if (client.readyState === 1) { // WebSocket.OPEN
       client.send(message);
     }
   });
 }
 
-// ============================================
-// ට්‍රැෆික් ලයිට් යාවත්කාලීන කිරීම - උසස් දිශා පාලනය
-// ============================================
+// Update traffic lights
 function updateTrafficLights() {
   const locations = Object.keys(trafficLights);
   const changes = [];
-  const now = Date.now();
-  const expiredLocations = [];
   
-  // හදිසි පාලන කල් ඉකුත් වීම පරීක්ෂා කිරීම
+  // Check for expired emergency overrides
+  const now = Date.now();
   Object.keys(emergencyOverrides).forEach(location => {
     const override = emergencyOverrides[location];
     if (new Date(override.expires).getTime() < now) {
-      expiredLocations.push(location);
-    }
-  });
-  
-  expiredLocations.forEach(location => {
-    delete emergencyOverrides[location];
-    if (trafficLights[location]) {
-      resetCityToOriginalState(location);
-      broadcastUpdate({
-        type: 'emergencyStopped',
-        location: location,
-        city: trafficLights[location].city,
-        province: trafficLights[location].province,
-        timestamp: new Date().toISOString()
-      });
+      delete emergencyOverrides[location];
+      if (trafficLights[location]) {
+        trafficLights[location].status = 'green';
+        trafficLights[location].timer = 60;
+      }
     }
   });
   
   locations.forEach(location => {
     if (emergencyOverrides[location]) return;
     
-    const cityLights = trafficLights[location];
-    const currentPhase = cityLights.phase;
+    const light = trafficLights[location];
+    light.timer -= 1;
     
-    cityLights.phaseTimer -= 1;
-    
-    if (cityLights.phaseTimer <= 0) {
-      let newPhase = '';
-      let newTimer = 0;
-      
-      switch (currentPhase) {
-        case 'vertical-green':
-          // Up & Down Green -> Yellow
-          newPhase = 'vertical-yellow';
-          newTimer = 5;
-          
-          cityLights.directions.up.status = 'yellow';
-          cityLights.directions.up.timer = 5;
-          cityLights.directions.down.status = 'yellow';
-          cityLights.directions.down.timer = 5;
-          cityLights.directions.left.status = 'red';
-          cityLights.directions.left.timer = 5;
-          cityLights.directions.right.status = 'red';
-          cityLights.directions.right.timer = 5;
-          break;
-          
-        case 'vertical-yellow':
-          // Yellow -> Horizontal Green
-          newPhase = 'horizontal-green';
-          newTimer = cityLights.phaseTimer < 0 ? 60 : cityLights.phaseTimer;
-          
-          // Up & Down -> Red, Left & Right -> Green
-          cityLights.directions.up.status = 'red';
-          cityLights.directions.up.timer = newTimer;
-          cityLights.directions.down.status = 'red';
-          cityLights.directions.down.timer = newTimer;
-          cityLights.directions.left.status = 'green';
-          cityLights.directions.left.timer = newTimer;
-          cityLights.directions.right.status = 'green';
-          cityLights.directions.right.timer = newTimer;
-          break;
-          
-        case 'horizontal-green':
-          // Left & Right Green -> Yellow
-          newPhase = 'horizontal-yellow';
-          newTimer = 5;
-          
-          cityLights.directions.left.status = 'yellow';
-          cityLights.directions.left.timer = 5;
-          cityLights.directions.right.status = 'yellow';
-          cityLights.directions.right.timer = 5;
-          cityLights.directions.up.status = 'red';
-          cityLights.directions.up.timer = 5;
-          cityLights.directions.down.status = 'red';
-          cityLights.directions.down.timer = 5;
-          break;
-          
-        case 'horizontal-yellow':
-          // Yellow -> Vertical Green
-          newPhase = 'vertical-green';
-          newTimer = cityLights.phaseTimer < 0 ? 60 : cityLights.phaseTimer;
-          
-          // Left & Right -> Red, Up & Down -> Green
-          cityLights.directions.left.status = 'red';
-          cityLights.directions.left.timer = newTimer;
-          cityLights.directions.right.status = 'red';
-          cityLights.directions.right.timer = newTimer;
-          cityLights.directions.up.status = 'green';
-          cityLights.directions.up.timer = newTimer;
-          cityLights.directions.down.status = 'green';
-          cityLights.directions.down.timer = newTimer;
-          break;
-          
-        default:
-          newPhase = 'vertical-green';
-          newTimer = 60;
-          cityLights.directions.up.status = 'green';
-          cityLights.directions.up.timer = 60;
-          cityLights.directions.down.status = 'green';
-          cityLights.directions.down.timer = 60;
-          cityLights.directions.left.status = 'red';
-          cityLights.directions.left.timer = 60;
-          cityLights.directions.right.status = 'red';
-          cityLights.directions.right.timer = 60;
-          break;
+    if (light.timer <= 0) {
+      const oldStatus = light.status;
+      if (light.status === 'green') {
+        light.status = 'yellow';
+        light.timer = 5;
+      } else if (light.status === 'yellow') {
+        light.status = 'red';
+        light.timer = 30;
+      } else if (light.status === 'red') {
+        light.status = 'green';
+        light.timer = 60;
       }
-      
-      cityLights.phase = newPhase;
-      cityLights.phaseTimer = newTimer;
       
       changes.push({
         location: location,
-        phase: newPhase,
-        city: cityLights.city,
-        province: cityLights.province,
-        directions: {
-          up: cityLights.directions.up.status,
-          down: cityLights.directions.down.status,
-          left: cityLights.directions.left.status,
-          right: cityLights.directions.right.status
-        }
-      });
-    } else {
-      // සියලුම දිශා සඳහා ටයිමර් සමමුහුර්ත කිරීම
-      const directions = ['up', 'down', 'left', 'right'];
-      directions.forEach(dir => {
-        if (cityLights.directions[dir]) {
-          cityLights.directions[dir].timer = Math.max(0, cityLights.phaseTimer);
-        }
+        oldStatus: oldStatus,
+        newStatus: light.status,
+        timer: light.timer,
+        city: light.city,
+        province: light.province
       });
     }
   });
@@ -776,9 +165,7 @@ function updateTrafficLights() {
   previousStates = JSON.parse(JSON.stringify(trafficLights));
 }
 
-// ============================================
-// IoT දත්ත යාවත්කාලීන කිරීම
-// ============================================
+// Update IoT data
 function updateIotData() {
   Object.keys(iotData.cameras).forEach(key => {
     const camera = iotData.cameras[key];
@@ -846,59 +233,6 @@ function updateIotData() {
   });
 }
 
-// ============================================
-// සංඛ්‍යාන ගණනය කිරීම
-// ============================================
-function calculateStats() {
-  const total = Object.keys(trafficLights).length;
-  const statusCounts = { red: 0, yellow: 0, green: 0 };
-  const directionCounts = { 
-    up: { red: 0, yellow: 0, green: 0 }, 
-    down: { red: 0, yellow: 0, green: 0 }, 
-    left: { red: 0, yellow: 0, green: 0 }, 
-    right: { red: 0, yellow: 0, green: 0 } 
-  };
-  const provinceStats = {};
-  
-  Object.keys(trafficLights).forEach(key => {
-    const light = trafficLights[key];
-    const directions = ['up', 'down', 'left', 'right'];
-    
-    directions.forEach(dir => {
-      const dirLight = light.directions[dir];
-      if (dirLight) {
-        statusCounts[dirLight.status]++;
-        directionCounts[dir][dirLight.status]++;
-      }
-    });
-    
-    if (!provinceStats[light.province]) {
-      provinceStats[light.province] = { 
-        total: 0, 
-        red: 0, 
-        yellow: 0, 
-        green: 0,
-        cities: []
-      };
-    }
-    provinceStats[light.province].total++;
-    provinceStats[light.province].cities.push(light.city);
-  });
-  
-  return {
-    totalCities: total,
-    totalDirections: total * 4,
-    statusDistribution: statusCounts,
-    directionCounts: directionCounts,
-    provinceStats: provinceStats,
-    activeEmergencyOverrides: Object.keys(emergencyOverrides).length,
-    timestamp: new Date().toISOString()
-  };
-}
-
-// ============================================
-// පිටතට නිරාවරණය කිරීම
-// ============================================
 module.exports = {
   trafficLights,
   iotData,
@@ -906,18 +240,5 @@ module.exports = {
   clients,
   updateTrafficLights,
   updateIotData,
-  broadcastUpdate,
-  getCityDirections,
-  getDirectionStatus,
-  setDirectionStatus,
-  resetCityToOriginalState,
-  calculateStats,
-  // උසස් දිශා රටා පාලන ශ්‍රිත
-  setPatternUpGreen,
-  setPatternDownGreen,
-  setPatternLeftGreen,
-  setPatternRightGreen,
-  setPatternVerticalGreen,
-  setPatternHorizontalGreen,
-  setPatternAllRed
+  broadcastUpdate
 };
