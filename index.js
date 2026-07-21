@@ -1,6 +1,15 @@
 const http = require('http');
 const WebSocket = require('ws');
-const { trafficLights, iotData, emergencyOverrides, updateTrafficLights, updateIotData, broadcastUpdate, clients, calculateStats } = require('./trafficSystem');
+const { 
+  trafficLights, 
+  iotData, 
+  emergencyOverrides, 
+  updateTrafficLights, 
+  updateIotData, 
+  broadcastUpdate, 
+  clients, 
+  calculateStats 
+} = require('./trafficSystem');
 const { handleApiRequest } = require('./apiHandler');
 
 const port = process.env.PORT || 3000;
@@ -69,7 +78,7 @@ setInterval(() => {
 server.listen(port, () => {
   console.log('========================================');
   console.log('Road Lanka IoT Traffic Management System API');
-  console.log('with Directional Control (Up/Down/Left/Right)');
+  console.log('with Directional Control (⬆️⬇️⬅️➡️)');
   console.log('========================================');
   console.log(`Server running at http://localhost:${port}`);
   console.log(`Total cities monitored: ${Object.keys(trafficLights).length}`);
@@ -90,7 +99,10 @@ server.listen(port, () => {
   console.log('   GET  /api/health');
   console.log('   GET  /api/traffic-lights');
   console.log('   GET  /api/traffic-lights/:location');
-  console.log('   GET  /api/traffic-lights/status?status=red|yellow|green&direction=up|down|left|right');
+  console.log('   GET  /api/trafficlight/direction?city=&direction=');
+  console.log('   POST /api/trafficlight/direction');
+  console.log('   POST /api/trafficlight/bulk/direction');
+  console.log('   GET  /api/cities');
   console.log('   GET  /api/provinces');
   console.log('   GET  /api/stats');
   console.log('   GET  /api/iot');
@@ -101,10 +113,7 @@ server.listen(port, () => {
   console.log('   GET  /api/emergency/overrides');
   console.log('   POST /api/emergency/green');
   console.log('   POST /api/emergency/red');
-  console.log('   POST /api/trafficlight/direction');
-  console.log('   POST /api/trafficlight/bulk/direction');
-  console.log('   PUT  /api/traffic-lights/:location');
-  console.log('   POST /api/traffic-lights/batch');
+  console.log('   POST /api/emergency/stop');
   console.log('\nWebSocket:');
   console.log(`   ws://localhost:${port} (Real-time updates)`);
   console.log('========================================');
