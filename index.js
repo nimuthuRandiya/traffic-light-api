@@ -11,7 +11,6 @@ const {
   calculateStats 
 } = require('./trafficSystem');
 const { handleApiRequest } = require('./apiHandler');
-const { balanceManager } = require('./file-balance');
 
 const port = process.env.PORT || 3000;
 
@@ -48,7 +47,6 @@ wss.on('connection', (ws) => {
     stats: calculateStats(),
     iot: iotData,
     emergencyOverrides: emergencyOverrides,
-    balanceStatus: balanceManager.getGlobalStatus(),
     directions: ['up', 'down', 'left', 'right'],
     timestamp: new Date().toISOString()
   }));
@@ -58,31 +56,6 @@ wss.on('connection', (ws) => {
       const data = JSON.parse(message);
       if (data.type === 'ping') {
         ws.send(JSON.stringify({ type: 'pong', timestamp: new Date().toISOString() }));
-      }
-      // Handle balance manager commands via WebSocket
-      else if (data.type === 'getBalanceReport') {
-        const report = balanceManager.getBalanceReport(data.location);
-        ws.send(JSON.stringify({
-          type: 'balanceReport',
-          data: report,
-          timestamp: new Date().toISOString()
-        }));
-      }
-      else if (data.type === 'getGlobalStatus') {
-        ws.send(JSON.stringify({
-          type: 'globalBalanceStatus',
-          data: balanceManager.getGlobalStatus(),
-          timestamp: new Date().toISOString()
-        }));
-      }
-      else if (data.type === 'resetBalanceStats') {
-        const result = balanceManager.resetBalanceStats(data.location);
-        ws.send(JSON.stringify({
-          type: 'balanceReset',
-          location: data.location,
-          success: result,
-          timestamp: new Date().toISOString()
-        }));
       }
     } catch (error) {
       console.error('Error processing WebSocket message:', error);
@@ -95,26 +68,12 @@ wss.on('connection', (ws) => {
   });
 });
 
-// DISABLE original traffic light update - use balance manager instead
-// setInterval(updateTrafficLights, 1000);
-// The balance manager now handles traffic light timing
-
-// Keep IoT updates
+// Start traffic light updates
+setInterval(updateTrafficLights, 1000);
 setInterval(() => {
   updateIotData();
   broadcastIotUpdates();
 }, 3000);
-
-// Broadcast balance status periodically
-setInterval(() => {
-  if (clients.size > 0) {
-    broadcastUpdate({
-      type: 'balanceStatus',
-      data: balanceManager.getGlobalStatus(),
-      timestamp: new Date().toISOString()
-    });
-  }
-}, 30000);
 
 server.listen(port, () => {
   console.log('========================================');
@@ -136,17 +95,6 @@ server.listen(port, () => {
   console.log(`   🔄 Inductive Loop Sensors: ${Object.keys(iotData.inductiveLoops).length}`);
   console.log(`   🌫️ Air Quality Sensors: ${Object.keys(iotData.airQuality).length}`);
   console.log(`   🚌 Fleet GPS Trackers: ${Object.keys(iotData.fleet).length}`);
-  console.log('\n⚖️ Time Balance System Status:');
-  console.log(`   ✅ Balance Manager: Active`);
-  console.log(`   🔄 Balance Interval: ${balanceManager.balanceInterval ? 'Running' : 'Stopped'}`);
-  console.log(`   📊 Total Locations: ${Object.keys(balanceManager.balanceState).length}`);
-  console.log(`   ⚖️ Global Fairness: ${(balanceManager.globalMetrics?.avgFairness * 100 || 0).toFixed(1)}%`);
-  console.log(`   📈 Emergency Mode: ${balanceManager.emergencyMode ? 'ACTIVE' : 'Inactive'}`);
-  console.log('\n✅ COLLISION PREVENTION:');
-  console.log('   ❌ Left and Right can NEVER be green with Up and Down');
-  console.log('   ❌ Only one direction pair green at a time');
-  console.log('   ⚖️ Dynamic time balancing based on traffic');
-  console.log('   📊 Fair distribution across all 4 directions');
   console.log('\nAvailable API Endpoints:');
   console.log('   GET  /api/health');
   console.log('   GET  /api/traffic-lights');
@@ -166,14 +114,6 @@ server.listen(port, () => {
   console.log('   POST /api/emergency/green');
   console.log('   POST /api/emergency/red');
   console.log('   POST /api/emergency/stop');
-  console.log('\nBalance API Endpoints (New):');
-  console.log('   GET  /api/balance/status');
-  console.log('   GET  /api/balance/report/:location');
-  console.log('   GET  /api/balance/reports');
-  console.log('   GET  /api/balance/fairness');
-  console.log('   POST /api/balance/emergency');
-  console.log('   POST /api/balance/reset');
-  console.log('   POST /api/balance/run');
   console.log('\nWebSocket:');
   console.log(`   ws://localhost:${port} (Real-time updates)`);
   console.log('========================================');
