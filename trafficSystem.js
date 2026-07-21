@@ -847,7 +847,7 @@ function updateIotData() {
 }
 
 // ============================================
-= සංඛ්‍යාන ගණනය කිරීම
+// සංඛ්‍යාන ගණනය කිරීම
 // ============================================
 function calculateStats() {
   const total = Object.keys(trafficLights).length;
