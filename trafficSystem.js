@@ -1,11 +1,19 @@
-// Emergency overrides storage
+// ============================================
+// උසස් දිශා පාලන ට්‍රැෆික් ලයිට් පද්ධතිය
+// සෑම දිශාවක්ම තනි තනිව පාලනය කිරීම
+// ============================================
+
+// හදිසි පාලන ගබඩාව
 let emergencyOverrides = {};
 
-// Store original timers and statuses for emergency recovery
+// හදිසි ප්‍රතිසාධනය සඳහා මුල් තත්ව ගබඩා කිරීම
 const ORIGINAL_TIMERS = {};
 const ORIGINAL_STATUSES = {};
 
-// Traffic light state management for all Sri Lankan cities with directional controls
+// ============================================
+// ශ්‍රී ලංකා නගර සඳහා ට්‍රැෆික් ලයිට් තත්ව කළමනාකරණය
+// සෑම දිශාවකටම වෙන වෙනම පාලනය
+// ============================================
 const trafficLights = {
   colombo: {
     city: 'Colombo',
@@ -14,7 +22,7 @@ const trafficLights = {
     phaseTimer: 90,
     directions: {
       up: { status: 'green', timer: 90 },
-      down: { status: 'green', timer: 90 },
+      down: { status: 'red', timer: 90 },    // up green, down red
       left: { status: 'red', timer: 90 },
       right: { status: 'red', timer: 90 }
     }
@@ -50,7 +58,7 @@ const trafficLights = {
     phaseTimer: 85,
     directions: {
       up: { status: 'green', timer: 85 },
-      down: { status: 'green', timer: 85 },
+      down: { status: 'red', timer: 85 },    // up green, down red
       left: { status: 'red', timer: 85 },
       right: { status: 'red', timer: 85 }
     }
@@ -74,7 +82,7 @@ const trafficLights = {
     phaseTimer: 80,
     directions: {
       up: { status: 'green', timer: 80 },
-      down: { status: 'green', timer: 80 },
+      down: { status: 'red', timer: 80 },
       left: { status: 'red', timer: 80 },
       right: { status: 'red', timer: 80 }
     }
@@ -110,7 +118,7 @@ const trafficLights = {
     phaseTimer: 75,
     directions: {
       up: { status: 'green', timer: 75 },
-      down: { status: 'green', timer: 75 },
+      down: { status: 'red', timer: 75 },
       left: { status: 'red', timer: 75 },
       right: { status: 'red', timer: 75 }
     }
@@ -122,7 +130,7 @@ const trafficLights = {
     phaseTimer: 90,
     directions: {
       up: { status: 'green', timer: 90 },
-      down: { status: 'green', timer: 90 },
+      down: { status: 'red', timer: 90 },
       left: { status: 'red', timer: 90 },
       right: { status: 'red', timer: 90 }
     }
@@ -158,7 +166,7 @@ const trafficLights = {
     phaseTimer: 70,
     directions: {
       up: { status: 'green', timer: 70 },
-      down: { status: 'green', timer: 70 },
+      down: { status: 'red', timer: 70 },
       left: { status: 'red', timer: 70 },
       right: { status: 'red', timer: 70 }
     }
@@ -194,7 +202,7 @@ const trafficLights = {
     phaseTimer: 75,
     directions: {
       up: { status: 'green', timer: 75 },
-      down: { status: 'green', timer: 75 },
+      down: { status: 'red', timer: 75 },
       left: { status: 'red', timer: 75 },
       right: { status: 'red', timer: 75 }
     }
@@ -230,7 +238,7 @@ const trafficLights = {
     phaseTimer: 80,
     directions: {
       up: { status: 'green', timer: 80 },
-      down: { status: 'green', timer: 80 },
+      down: { status: 'red', timer: 80 },
       left: { status: 'red', timer: 80 },
       right: { status: 'red', timer: 80 }
     }
@@ -254,7 +262,7 @@ const trafficLights = {
     phaseTimer: 70,
     directions: {
       up: { status: 'green', timer: 70 },
-      down: { status: 'green', timer: 70 },
+      down: { status: 'red', timer: 70 },
       left: { status: 'red', timer: 70 },
       right: { status: 'red', timer: 70 }
     }
@@ -278,7 +286,7 @@ const trafficLights = {
     phaseTimer: 80,
     directions: {
       up: { status: 'green', timer: 80 },
-      down: { status: 'green', timer: 80 },
+      down: { status: 'red', timer: 80 },
       left: { status: 'red', timer: 80 },
       right: { status: 'red', timer: 80 }
     }
@@ -314,7 +322,7 @@ const trafficLights = {
     phaseTimer: 75,
     directions: {
       up: { status: 'green', timer: 75 },
-      down: { status: 'green', timer: 75 },
+      down: { status: 'red', timer: 75 },
       left: { status: 'red', timer: 75 },
       right: { status: 'red', timer: 75 }
     }
@@ -350,14 +358,16 @@ const trafficLights = {
     phaseTimer: 85,
     directions: {
       up: { status: 'green', timer: 85 },
-      down: { status: 'green', timer: 85 },
+      down: { status: 'red', timer: 85 },
       left: { status: 'red', timer: 85 },
       right: { status: 'red', timer: 85 }
     }
   }
 };
 
-// Initialize original timers and statuses for emergency recovery
+// ============================================
+// මුල් තත්ව ආරම්භ කිරීම
+// ============================================
 function initializeOriginalStates() {
   Object.keys(trafficLights).forEach(location => {
     if (!ORIGINAL_TIMERS[location]) ORIGINAL_TIMERS[location] = {};
@@ -377,7 +387,7 @@ function initializeOriginalStates() {
 initializeOriginalStates();
 
 // ============================================
-// IOT SENSORS DATA
+// IoT සංවේදක දත්ත
 // ============================================
 const iotData = {
   cameras: {
@@ -435,7 +445,7 @@ let previousIotData = JSON.parse(JSON.stringify(iotData));
 const clients = new Set();
 
 // ============================================
-// HELPER FUNCTIONS (STRICT SAFETY ENFORCED)
+// සහායක ශ්‍රිත (ආරක්ෂිත පාලනය)
 // ============================================
 
 function getCityDirections(location) {
@@ -449,19 +459,23 @@ function getDirectionStatus(location, direction) {
   return trafficLights[location].directions[direction];
 }
 
-// Strict validation to completely prevent collisions
+// ============================================
+// දිශා පාලන ශ්‍රිත - ගැටීම් සම්පූර්ණයෙන් වැළැක්වීම
+// ============================================
 function setDirectionStatus(location, direction, status, timer) {
   if (!trafficLights[location]) return false;
   if (!trafficLights[location].directions[direction]) return false;
   
+  // ආරක්ෂිත පාලනය - එකම දිශාවකට පමණක් Green ලබා දීම
   if (status === 'green') {
-    const isVertical = (direction === 'up' || direction === 'down');
-    const oppositePair = isVertical ? ['left', 'right'] : ['up', 'down'];
-    
-    // Force opposite pair to RED immediately if this is set to green
-    oppositePair.forEach(dir => {
-      if (trafficLights[location].directions[dir]) {
+    // වෙනත් සියලුම දිශා Red කිරීම
+    const allDirections = ['up', 'down', 'left', 'right'];
+    allDirections.forEach(dir => {
+      if (dir !== direction && trafficLights[location].directions[dir]) {
         trafficLights[location].directions[dir].status = 'red';
+        if (timer !== undefined) {
+          trafficLights[location].directions[dir].timer = timer;
+        }
       }
     });
   }
@@ -473,6 +487,114 @@ function setDirectionStatus(location, direction, status, timer) {
   return true;
 }
 
+// ============================================
+// විශේෂිත දිශා රටා පාලනය
+// ============================================
+
+// රටාව 1: Up Green, අනෙකුත් සියල්ල Red
+function setPatternUpGreen(location, timer) {
+  if (!trafficLights[location]) return false;
+  const dirs = trafficLights[location].directions;
+  dirs.up.status = 'green';
+  dirs.up.timer = timer || 60;
+  dirs.down.status = 'red';
+  dirs.down.timer = timer || 60;
+  dirs.left.status = 'red';
+  dirs.left.timer = timer || 60;
+  dirs.right.status = 'red';
+  dirs.right.timer = timer || 60;
+  return true;
+}
+
+// රටාව 2: Down Green, අනෙකුත් සියල්ල Red
+function setPatternDownGreen(location, timer) {
+  if (!trafficLights[location]) return false;
+  const dirs = trafficLights[location].directions;
+  dirs.up.status = 'red';
+  dirs.up.timer = timer || 60;
+  dirs.down.status = 'green';
+  dirs.down.timer = timer || 60;
+  dirs.left.status = 'red';
+  dirs.left.timer = timer || 60;
+  dirs.right.status = 'red';
+  dirs.right.timer = timer || 60;
+  return true;
+}
+
+// රටාව 3: Left Green, අනෙකුත් සියල්ල Red
+function setPatternLeftGreen(location, timer) {
+  if (!trafficLights[location]) return false;
+  const dirs = trafficLights[location].directions;
+  dirs.up.status = 'red';
+  dirs.up.timer = timer || 60;
+  dirs.down.status = 'red';
+  dirs.down.timer = timer || 60;
+  dirs.left.status = 'green';
+  dirs.left.timer = timer || 60;
+  dirs.right.status = 'red';
+  dirs.right.timer = timer || 60;
+  return true;
+}
+
+// රටාව 4: Right Green, අනෙකුත් සියල්ල Red
+function setPatternRightGreen(location, timer) {
+  if (!trafficLights[location]) return false;
+  const dirs = trafficLights[location].directions;
+  dirs.up.status = 'red';
+  dirs.up.timer = timer || 60;
+  dirs.down.status = 'red';
+  dirs.down.timer = timer || 60;
+  dirs.left.status = 'red';
+  dirs.left.timer = timer || 60;
+  dirs.right.status = 'green';
+  dirs.right.timer = timer || 60;
+  return true;
+}
+
+// රටාව 5: Vertical Pair (Up & Down) Green, Horizontal Red
+function setPatternVerticalGreen(location, timer) {
+  if (!trafficLights[location]) return false;
+  const dirs = trafficLights[location].directions;
+  dirs.up.status = 'green';
+  dirs.up.timer = timer || 60;
+  dirs.down.status = 'green';
+  dirs.down.timer = timer || 60;
+  dirs.left.status = 'red';
+  dirs.left.timer = timer || 60;
+  dirs.right.status = 'red';
+  dirs.right.timer = timer || 60;
+  return true;
+}
+
+// රටාව 6: Horizontal Pair (Left & Right) Green, Vertical Red
+function setPatternHorizontalGreen(location, timer) {
+  if (!trafficLights[location]) return false;
+  const dirs = trafficLights[location].directions;
+  dirs.up.status = 'red';
+  dirs.up.timer = timer || 60;
+  dirs.down.status = 'red';
+  dirs.down.timer = timer || 60;
+  dirs.left.status = 'green';
+  dirs.left.timer = timer || 60;
+  dirs.right.status = 'green';
+  dirs.right.timer = timer || 60;
+  return true;
+}
+
+// රටාව 7: All Red (හදිසි නැවතුම)
+function setPatternAllRed(location) {
+  if (!trafficLights[location]) return false;
+  const dirs = trafficLights[location].directions;
+  ['up', 'down', 'left', 'right'].forEach(dir => {
+    dirs[dir].status = 'red';
+    dirs[dir].timer = 0;
+  });
+  return true;
+}
+
+// ============================================
+// මුල් තත්වයට නැවත සැකසීම
+// ============================================
 function resetCityToOriginalState(location) {
   if (!trafficLights[location]) return false;
   if (!ORIGINAL_STATUSES[location]) return false;
@@ -498,15 +620,15 @@ function broadcastUpdate(data) {
 }
 
 // ============================================
-// UPDATE FUNCTIONS - BULLETPROOF COLLISION FIX
+// ට්‍රැෆික් ලයිට් යාවත්කාලීන කිරීම - උසස් දිශා පාලනය
 // ============================================
-
 function updateTrafficLights() {
   const locations = Object.keys(trafficLights);
   const changes = [];
   const now = Date.now();
   const expiredLocations = [];
   
+  // හදිසි පාලන කල් ඉකුත් වීම පරීක්ෂා කිරීම
   Object.keys(emergencyOverrides).forEach(location => {
     const override = emergencyOverrides[location];
     if (new Date(override.expires).getTime() < now) {
@@ -542,6 +664,7 @@ function updateTrafficLights() {
       
       switch (currentPhase) {
         case 'vertical-green':
+          // Up & Down Green -> Yellow
           newPhase = 'vertical-yellow';
           newTimer = 5;
           
@@ -556,11 +679,11 @@ function updateTrafficLights() {
           break;
           
         case 'vertical-yellow':
+          // Yellow -> Horizontal Green
           newPhase = 'horizontal-green';
-          // Different timers for different cities (already set in config)
           newTimer = cityLights.phaseTimer < 0 ? 60 : cityLights.phaseTimer;
           
-          // STRICT: Vertical -> RED, Horizontal -> GREEN
+          // Up & Down -> Red, Left & Right -> Green
           cityLights.directions.up.status = 'red';
           cityLights.directions.up.timer = newTimer;
           cityLights.directions.down.status = 'red';
@@ -572,6 +695,7 @@ function updateTrafficLights() {
           break;
           
         case 'horizontal-green':
+          // Left & Right Green -> Yellow
           newPhase = 'horizontal-yellow';
           newTimer = 5;
           
@@ -586,11 +710,11 @@ function updateTrafficLights() {
           break;
           
         case 'horizontal-yellow':
+          // Yellow -> Vertical Green
           newPhase = 'vertical-green';
-          // Different timers for different cities (already set in config)
           newTimer = cityLights.phaseTimer < 0 ? 60 : cityLights.phaseTimer;
           
-          // STRICT: Horizontal -> RED, Vertical -> GREEN
+          // Left & Right -> Red, Up & Down -> Green
           cityLights.directions.left.status = 'red';
           cityLights.directions.left.timer = newTimer;
           cityLights.directions.right.status = 'red';
@@ -622,10 +746,16 @@ function updateTrafficLights() {
         location: location,
         phase: newPhase,
         city: cityLights.city,
-        province: cityLights.province
+        province: cityLights.province,
+        directions: {
+          up: cityLights.directions.up.status,
+          down: cityLights.directions.down.status,
+          left: cityLights.directions.left.status,
+          right: cityLights.directions.right.status
+        }
       });
     } else {
-      // Synchronize individual direction timers safely with the current phase
+      // සියලුම දිශා සඳහා ටයිමර් සමමුහුර්ත කිරීම
       const directions = ['up', 'down', 'left', 'right'];
       directions.forEach(dir => {
         if (cityLights.directions[dir]) {
@@ -646,6 +776,9 @@ function updateTrafficLights() {
   previousStates = JSON.parse(JSON.stringify(trafficLights));
 }
 
+// ============================================
+// IoT දත්ත යාවත්කාලීන කිරීම
+// ============================================
 function updateIotData() {
   Object.keys(iotData.cameras).forEach(key => {
     const camera = iotData.cameras[key];
@@ -713,6 +846,9 @@ function updateIotData() {
   });
 }
 
+// ============================================
+= සංඛ්‍යාන ගණනය කිරීම
+// ============================================
 function calculateStats() {
   const total = Object.keys(trafficLights).length;
   const statusCounts = { red: 0, yellow: 0, green: 0 };
@@ -760,6 +896,9 @@ function calculateStats() {
   };
 }
 
+// ============================================
+// පිටතට නිරාවරණය කිරීම
+// ============================================
 module.exports = {
   trafficLights,
   iotData,
@@ -772,5 +911,13 @@ module.exports = {
   getDirectionStatus,
   setDirectionStatus,
   resetCityToOriginalState,
-  calculateStats
+  calculateStats,
+  // උසස් දිශා රටා පාලන ශ්‍රිත
+  setPatternUpGreen,
+  setPatternDownGreen,
+  setPatternLeftGreen,
+  setPatternRightGreen,
+  setPatternVerticalGreen,
+  setPatternHorizontalGreen,
+  setPatternAllRed
 };
