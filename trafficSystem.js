@@ -11,348 +11,348 @@ const trafficLights = {
     city: 'Colombo',
     province: 'Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 45 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 45 },
+      right: { status: 'red', timer: 45 }
     }
   },
   kandy: {
     city: 'Kandy',
     province: 'Central',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   galle: {
     city: 'Galle',
     province: 'Southern',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   negombo: {
     city: 'Negombo',
     province: 'Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 45 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 45 },
+      right: { status: 'red', timer: 45 }
     }
   },
   jaffna: {
     city: 'Jaffna',
     province: 'Northern',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   anuradhapura: {
     city: 'Anuradhapura',
     province: 'North Central',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 45 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 45 },
+      right: { status: 'red', timer: 45 }
     }
   },
   polonnaruwa: {
     city: 'Polonnaruwa',
     province: 'North Central',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   badulla: {
     city: 'Badulla',
     province: 'Uva',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   ratnapura: {
     city: 'Ratnapura',
     province: 'Sabaragamuwa',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 45 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 45 },
+      right: { status: 'red', timer: 45 }
     }
   },
   kurunegala_1: {
     city: 'Kurunegala - Main',
     province: 'North Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 45 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 45 },
+      right: { status: 'red', timer: 45 }
     }
   },
   kurunegala_2: {
     city: 'Kurunegala - Town Hall',
     province: 'North Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   kurunegala_3: {
     city: 'Kurunegala - Railway',
     province: 'North Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   kurunegala_4: {
     city: 'Kurunegala - Hospital',
     province: 'North Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 45 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 45 },
+      right: { status: 'red', timer: 45 }
     }
   },
   kurunegala_5: {
     city: 'Kurunegala - Bus Stand',
     province: 'North Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   matara: {
     city: 'Matara',
     province: 'Southern',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   batticaloa: {
     city: 'Batticaloa',
     province: 'Eastern',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 45 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 45 },
+      right: { status: 'red', timer: 45 }
     }
   },
   trincomalee: {
     city: 'Trincomalee',
     province: 'Eastern',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   kalutara: {
     city: 'Kalutara',
     province: 'Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   avissawella: {
     city: 'Avissawella',
     province: 'Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 45 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 45 },
+      right: { status: 'red', timer: 45 }
     }
   },
   gampaha: {
     city: 'Gampaha',
     province: 'Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   matale: {
     city: 'Matale',
     province: 'Central',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 45 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 45 },
+      right: { status: 'red', timer: 45 }
     }
   },
   nugegoda: {
     city: 'Nugegoda',
     province: 'Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   moratuwa: {
     city: 'Moratuwa',
     province: 'Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 45 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 45 },
+      right: { status: 'red', timer: 45 }
     }
   },
   dehiwala: {
     city: 'Dehiwala',
     province: 'Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   mountlavinia: {
     city: 'Mount Lavinia',
     province: 'Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   chilaw: {
     city: 'Chilaw',
     province: 'North Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 45 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 45 },
+      right: { status: 'red', timer: 45 }
     }
   },
   puttalam: {
     city: 'Puttalam',
     province: 'North Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   homagama: {
     city: 'Homagama',
     province: 'Western',
     phase: 'horizontal-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'red', timer: 60 },
-      down: { status: 'red', timer: 60 },
-      left: { status: 'green', timer: 60 },
-      right: { status: 'green', timer: 60 }
+      up: { status: 'red', timer: 45 },
+      down: { status: 'red', timer: 45 },
+      left: { status: 'green', timer: 45 },
+      right: { status: 'green', timer: 45 }
     }
   },
   maharagama: {
     city: 'Maharagama',
     province: 'Western',
     phase: 'vertical-green',
-    phaseTimer: 60,
+    phaseTimer: 45,
     directions: {
-      up: { status: 'green', timer: 60 },
-      down: { status: 'green', timer: 60 },
-      left: { status: 'red', timer: 60 },
-      right: { status: 'red', timer: 60 }
+      up: { status: 'green', timer: 45 },
+      down: { status: 'green', timer: 45 },
+      left: { status: 'red', timer: 45 },
+      right: { status: 'red', timer: 45 }
     }
   }
 };
@@ -481,7 +481,7 @@ function resetCityToOriginalState(location) {
   directions.forEach(dir => {
     if (trafficLights[location].directions[dir]) {
       trafficLights[location].directions[dir].status = ORIGINAL_STATUSES[location][dir] || 'green';
-      trafficLights[location].directions[dir].timer = ORIGINAL_TIMERS[location][dir] || 60;
+      trafficLights[location].directions[dir].timer = ORIGINAL_TIMERS[location][dir] || 45;
     }
   });
   
@@ -498,7 +498,203 @@ function broadcastUpdate(data) {
 }
 
 // ============================================
-// UPDATE FUNCTIONS - BULLETPROOF COLLISION FIX
+// TIME BALANCE SYSTEM INTEGRATION
+// ============================================
+
+// Balance configuration
+const BALANCE_CONFIG = {
+  MIN_GREEN_TIME: 15,
+  MAX_GREEN_TIME: 90,
+  DEFAULT_GREEN_TIME: 45,
+  YELLOW_DURATION: 5,
+  FAIRNESS_TOLERANCE: 0.85
+};
+
+// Balance state
+const balanceState = {};
+
+// Initialize balance state for all cities
+function initializeBalanceState() {
+  Object.keys(trafficLights).forEach(location => {
+    balanceState[location] = {
+      greenTimeUsed: { up: 0, down: 0, left: 0, right: 0 },
+      greenCycles: { up: 0, down: 0, left: 0, right: 0 },
+      waitTime: { up: 0, down: 0, left: 0, right: 0 },
+      balanceWeights: { up: 1, down: 1, left: 1, right: 1 },
+      phaseTime: 0,
+      activeDirection: null,
+      fairness: 1
+    };
+  });
+}
+
+initializeBalanceState();
+
+// Get traffic density for a location and direction
+function getTrafficDensity(location, direction) {
+  try {
+    // Check inductive loops
+    const loopKeys = Object.keys(iotData.inductiveLoops);
+    for (const key of loopKeys) {
+      if (key.includes(location) || location.includes(key)) {
+        const loop = iotData.inductiveLoops[key];
+        const count = loop.vehicleCount || 0;
+        if (count < 20) return 15;
+        if (count < 40) return 30;
+        if (count < 70) return 55;
+        if (count < 100) return 80;
+        return 110;
+      }
+    }
+    
+    // Check cameras
+    const cameraKeys = Object.keys(iotData.cameras);
+    for (const key of cameraKeys) {
+      if (key.includes(location) || location.includes(key)) {
+        const camera = iotData.cameras[key];
+        const vehicles = camera.vehiclesDetected || 0;
+        if (vehicles < 15) return 15;
+        if (vehicles < 30) return 30;
+        if (vehicles < 50) return 55;
+        if (vehicles < 70) return 80;
+        return 110;
+      }
+    }
+  } catch (e) {
+    // Fall back to time-based estimation
+  }
+  
+  // Time-based estimation
+  const hour = new Date().getHours();
+  if (hour >= 7 && hour <= 9) return 80;
+  if (hour >= 16 && hour <= 18) return 90;
+  if (hour >= 12 && hour <= 14) return 60;
+  if (hour >= 22 || hour <= 5) return 15;
+  return 40;
+}
+
+// Calculate green time based on traffic and fairness
+function calculateGreenTime(location, direction) {
+  const state = balanceState[location];
+  if (!state) return BALANCE_CONFIG.DEFAULT_GREEN_TIME;
+  
+  const density = getTrafficDensity(location, direction);
+  let baseTime = BALANCE_CONFIG.DEFAULT_GREEN_TIME;
+  
+  // Adjust for traffic density
+  if (density > 0) {
+    if (density < 25) {
+      baseTime = 30;
+    } else if (density < 50) {
+      baseTime = 40 + (density - 25) * 0.4;
+    } else if (density < 80) {
+      baseTime = 50 + (density - 50) * 0.6;
+    } else {
+      baseTime = 70 + (density - 80) * 0.3;
+    }
+  }
+  
+  // Apply balance weight
+  const weight = state.balanceWeights[direction] || 1;
+  let adjustedTime = baseTime * (1 / Math.max(0.3, weight));
+  
+  // Apply fairness multiplier
+  const totalGreenTime = Object.values(state.greenTimeUsed).reduce((a, b) => a + b, 0);
+  if (totalGreenTime > 0) {
+    const avgTime = totalGreenTime / 4;
+    const thisTime = state.greenTimeUsed[direction] || 0;
+    const ratio = thisTime / Math.max(1, avgTime);
+    
+    if (ratio < 0.4) adjustedTime *= 1.8;
+    else if (ratio < 0.6) adjustedTime *= 1.5;
+    else if (ratio < 0.8) adjustedTime *= 1.2;
+    else if (ratio > 1.5) adjustedTime *= 0.7;
+    else if (ratio > 1.2) adjustedTime *= 0.85;
+  }
+  
+  // Apply wait time priority
+  const waitTime = state.waitTime[direction] || 0;
+  if (waitTime > 120) adjustedTime *= 1.5;
+  else if (waitTime > 80) adjustedTime *= 1.3;
+  else if (waitTime > 50) adjustedTime *= 1.1;
+  
+  // Clamp
+  return Math.max(BALANCE_CONFIG.MIN_GREEN_TIME, 
+                  Math.min(BALANCE_CONFIG.MAX_GREEN_TIME, Math.round(adjustedTime)));
+}
+
+// Update balance weights
+function updateBalanceWeights(location) {
+  const state = balanceState[location];
+  if (!state) return;
+  
+  const directions = ['up', 'down', 'left', 'right'];
+  const totalCycles = directions.reduce((sum, dir) => sum + (state.greenCycles[dir] || 0), 0);
+  
+  if (totalCycles === 0) {
+    directions.forEach(dir => { state.balanceWeights[dir] = 1; });
+    return;
+  }
+  
+  let totalWeight = 0;
+  directions.forEach(dir => {
+    const cycles = state.greenCycles[dir] || 1;
+    const proportion = cycles / totalCycles;
+    let weight = 1 / (proportion * 4);
+    weight = Math.max(0.5, Math.min(2.5, weight));
+    
+    // Adjust for wait time
+    const waitTime = state.waitTime[dir] || 0;
+    if (waitTime > 100) weight *= 1.4;
+    else if (waitTime > 60) weight *= 1.2;
+    
+    state.balanceWeights[dir] = weight;
+    totalWeight += weight;
+  });
+  
+  // Normalize
+  directions.forEach(dir => {
+    state.balanceWeights[dir] = (state.balanceWeights[dir] / totalWeight) * 4;
+  });
+  
+  // Calculate fairness
+  const times = directions.map(dir => state.greenTimeUsed[dir] || 0);
+  const avgTime = times.reduce((a, b) => a + b, 0) / 4;
+  if (avgTime > 0) {
+    const maxDev = Math.max(...times.map(t => Math.abs(t - avgTime)));
+    state.fairness = Math.max(0.1, 1 - (maxDev / (avgTime * 2)));
+  }
+}
+
+// Calculate priority for directions
+function calculatePriority(location) {
+  const state = balanceState[location];
+  if (!state) return null;
+  
+  const directions = ['up', 'down', 'left', 'right'];
+  const priorities = directions.map(dir => {
+    const weight = state.balanceWeights[dir] || 1;
+    const cycles = state.greenCycles[dir] || 0;
+    const waitTime = state.waitTime[dir] || 0;
+    const usedTime = state.greenTimeUsed[dir] || 0;
+    
+    // Priority factors
+    const weightFactor = weight * 1.5;
+    const waitFactor = Math.min(2, waitTime / 60);
+    const fairnessFactor = 1 / (usedTime + 1);
+    
+    return {
+      direction: dir,
+      priority: weightFactor + waitFactor + fairnessFactor
+    };
+  });
+  
+  priorities.sort((a, b) => b.priority - a.priority);
+  return priorities[0];
+}
+
+// ============================================
+// UPDATE FUNCTIONS WITH TIME BALANCE
 // ============================================
 
 function updateTrafficLights() {
@@ -507,6 +703,7 @@ function updateTrafficLights() {
   const now = Date.now();
   const expiredLocations = [];
   
+  // Check expired emergency overrides
   Object.keys(emergencyOverrides).forEach(location => {
     const override = emergencyOverrides[location];
     if (new Date(override.expires).getTime() < now) {
@@ -533,6 +730,26 @@ function updateTrafficLights() {
     
     const cityLights = trafficLights[location];
     const currentPhase = cityLights.phase;
+    const state = balanceState[location];
+    
+    if (!state) return;
+    
+    // Update phase time
+    state.phaseTime += 1;
+    
+    // Update wait times
+    const directions = ['up', 'down', 'left', 'right'];
+    const greenDirections = (currentPhase === 'vertical-green' || currentPhase === 'vertical-yellow') 
+      ? ['up', 'down'] 
+      : ['left', 'right'];
+    
+    directions.forEach(dir => {
+      if (greenDirections.includes(dir) && (currentPhase === 'vertical-green' || currentPhase === 'horizontal-green')) {
+        state.waitTime[dir] = 0;
+      } else {
+        state.waitTime[dir] = (state.waitTime[dir] || 0) + 1;
+      }
+    });
     
     cityLights.phaseTimer -= 1;
     
@@ -541,86 +758,150 @@ function updateTrafficLights() {
       let newTimer = 0;
       
       switch (currentPhase) {
-        case 'vertical-green':
+        case 'vertical-green': {
+          // Calculate green time for vertical
+          const greenTime = calculateGreenTime(location, 'up');
           newPhase = 'vertical-yellow';
-          newTimer = 5;
+          newTimer = BALANCE_CONFIG.YELLOW_DURATION;
           
           cityLights.directions.up.status = 'yellow';
-          cityLights.directions.up.timer = 5;
+          cityLights.directions.up.timer = BALANCE_CONFIG.YELLOW_DURATION;
           cityLights.directions.down.status = 'yellow';
-          cityLights.directions.down.timer = 5;
+          cityLights.directions.down.timer = BALANCE_CONFIG.YELLOW_DURATION;
           cityLights.directions.left.status = 'red';
-          cityLights.directions.left.timer = 5;
+          cityLights.directions.left.timer = BALANCE_CONFIG.YELLOW_DURATION;
           cityLights.directions.right.status = 'red';
-          cityLights.directions.right.timer = 5;
+          cityLights.directions.right.timer = BALANCE_CONFIG.YELLOW_DURATION;
+          
+          // Track green time used
+          state.greenTimeUsed.up += greenTime;
+          state.greenTimeUsed.down += greenTime;
+          state.greenCycles.up += 1;
+          state.greenCycles.down += 1;
           break;
+        }
           
-        case 'vertical-yellow':
-          newPhase = 'horizontal-green';
-          newTimer = 60;
+        case 'vertical-yellow': {
+          // Update balance weights before switching
+          updateBalanceWeights(location);
           
-          // STRICT: Vertical -> RED, Horizontal -> GREEN
-          cityLights.directions.up.status = 'red';
-          cityLights.directions.up.timer = 60;
-          cityLights.directions.down.status = 'red';
-          cityLights.directions.down.timer = 60;
-          cityLights.directions.left.status = 'green';
-          cityLights.directions.left.timer = 60;
-          cityLights.directions.right.status = 'green';
-          cityLights.directions.right.timer = 60;
+          // Calculate priority to determine next phase
+          const priority = calculatePriority(location);
+          const isVertical = priority && (priority.direction === 'up' || priority.direction === 'down');
+          
+          newPhase = isVertical ? 'vertical-green' : 'horizontal-green';
+          const greenTime = calculateGreenTime(location, isVertical ? 'up' : 'left');
+          newTimer = greenTime;
+          
+          if (isVertical) {
+            // STRICT: Vertical -> GREEN, Horizontal -> RED
+            cityLights.directions.up.status = 'green';
+            cityLights.directions.up.timer = greenTime;
+            cityLights.directions.down.status = 'green';
+            cityLights.directions.down.timer = greenTime;
+            cityLights.directions.left.status = 'red';
+            cityLights.directions.left.timer = greenTime;
+            cityLights.directions.right.status = 'red';
+            cityLights.directions.right.timer = greenTime;
+          } else {
+            // STRICT: Horizontal -> GREEN, Vertical -> RED
+            cityLights.directions.up.status = 'red';
+            cityLights.directions.up.timer = greenTime;
+            cityLights.directions.down.status = 'red';
+            cityLights.directions.down.timer = greenTime;
+            cityLights.directions.left.status = 'green';
+            cityLights.directions.left.timer = greenTime;
+            cityLights.directions.right.status = 'green';
+            cityLights.directions.right.timer = greenTime;
+          }
           break;
+        }
           
-        case 'horizontal-green':
+        case 'horizontal-green': {
+          // Calculate green time for horizontal
+          const greenTime = calculateGreenTime(location, 'left');
           newPhase = 'horizontal-yellow';
-          newTimer = 5;
+          newTimer = BALANCE_CONFIG.YELLOW_DURATION;
           
           cityLights.directions.left.status = 'yellow';
-          cityLights.directions.left.timer = 5;
+          cityLights.directions.left.timer = BALANCE_CONFIG.YELLOW_DURATION;
           cityLights.directions.right.status = 'yellow';
-          cityLights.directions.right.timer = 5;
+          cityLights.directions.right.timer = BALANCE_CONFIG.YELLOW_DURATION;
           cityLights.directions.up.status = 'red';
-          cityLights.directions.up.timer = 5;
+          cityLights.directions.up.timer = BALANCE_CONFIG.YELLOW_DURATION;
           cityLights.directions.down.status = 'red';
-          cityLights.directions.down.timer = 5;
-          break;
+          cityLights.directions.down.timer = BALANCE_CONFIG.YELLOW_DURATION;
           
-        case 'horizontal-yellow':
+          // Track green time used
+          state.greenTimeUsed.left += greenTime;
+          state.greenTimeUsed.right += greenTime;
+          state.greenCycles.left += 1;
+          state.greenCycles.right += 1;
+          break;
+        }
+          
+        case 'horizontal-yellow': {
+          // Update balance weights before switching
+          updateBalanceWeights(location);
+          
+          // Calculate priority to determine next phase
+          const priority = calculatePriority(location);
+          const isVertical = priority && (priority.direction === 'up' || priority.direction === 'down');
+          
+          newPhase = isVertical ? 'vertical-green' : 'horizontal-green';
+          const greenTime = calculateGreenTime(location, isVertical ? 'up' : 'left');
+          newTimer = greenTime;
+          
+          if (isVertical) {
+            // STRICT: Vertical -> GREEN, Horizontal -> RED
+            cityLights.directions.up.status = 'green';
+            cityLights.directions.up.timer = greenTime;
+            cityLights.directions.down.status = 'green';
+            cityLights.directions.down.timer = greenTime;
+            cityLights.directions.left.status = 'red';
+            cityLights.directions.left.timer = greenTime;
+            cityLights.directions.right.status = 'red';
+            cityLights.directions.right.timer = greenTime;
+          } else {
+            // STRICT: Horizontal -> GREEN, Vertical -> RED
+            cityLights.directions.up.status = 'red';
+            cityLights.directions.up.timer = greenTime;
+            cityLights.directions.down.status = 'red';
+            cityLights.directions.down.timer = greenTime;
+            cityLights.directions.left.status = 'green';
+            cityLights.directions.left.timer = greenTime;
+            cityLights.directions.right.status = 'green';
+            cityLights.directions.right.timer = greenTime;
+          }
+          break;
+        }
+          
+        default: {
           newPhase = 'vertical-green';
-          newTimer = 60;
-          
-          // STRICT: Horizontal -> RED, Vertical -> GREEN
-          cityLights.directions.left.status = 'red';
-          cityLights.directions.left.timer = 60;
-          cityLights.directions.right.status = 'red';
-          cityLights.directions.right.timer = 60;
+          newTimer = BALANCE_CONFIG.DEFAULT_GREEN_TIME;
           cityLights.directions.up.status = 'green';
-          cityLights.directions.up.timer = 60;
+          cityLights.directions.up.timer = BALANCE_CONFIG.DEFAULT_GREEN_TIME;
           cityLights.directions.down.status = 'green';
-          cityLights.directions.down.timer = 60;
-          break;
-          
-        default:
-          newPhase = 'vertical-green';
-          newTimer = 60;
-          cityLights.directions.up.status = 'green';
-          cityLights.directions.up.timer = 60;
-          cityLights.directions.down.status = 'green';
-          cityLights.directions.down.timer = 60;
+          cityLights.directions.down.timer = BALANCE_CONFIG.DEFAULT_GREEN_TIME;
           cityLights.directions.left.status = 'red';
-          cityLights.directions.left.timer = 60;
+          cityLights.directions.left.timer = BALANCE_CONFIG.DEFAULT_GREEN_TIME;
           cityLights.directions.right.status = 'red';
-          cityLights.directions.right.timer = 60;
+          cityLights.directions.right.timer = BALANCE_CONFIG.DEFAULT_GREEN_TIME;
           break;
+        }
       }
       
       cityLights.phase = newPhase;
       cityLights.phaseTimer = newTimer;
+      state.phaseTime = 0;
       
       changes.push({
         location: location,
         phase: newPhase,
         city: cityLights.city,
-        province: cityLights.province
+        province: cityLights.province,
+        timer: newTimer,
+        fairness: Math.round(state.fairness * 100) / 100 || 1
       });
     } else {
       const directions = ['up', 'down', 'left', 'right'];
@@ -720,6 +1001,8 @@ function calculateStats() {
     right: { red: 0, yellow: 0, green: 0 } 
   };
   const provinceStats = {};
+  let totalFairness = 0;
+  let fairnessCount = 0;
   
   Object.keys(trafficLights).forEach(key => {
     const light = trafficLights[key];
@@ -744,6 +1027,12 @@ function calculateStats() {
     }
     provinceStats[light.province].total++;
     provinceStats[light.province].cities.push(light.city);
+    
+    // Add balance fairness
+    if (balanceState[key]) {
+      totalFairness += balanceState[key].fairness || 1;
+      fairnessCount++;
+    }
   });
   
   return {
@@ -753,6 +1042,29 @@ function calculateStats() {
     directionCounts: directionCounts,
     provinceStats: provinceStats,
     activeEmergencyOverrides: Object.keys(emergencyOverrides).length,
+    balanceFairness: fairnessCount > 0 ? totalFairness / fairnessCount : 1,
+    timestamp: new Date().toISOString()
+  };
+}
+
+// Get balance report for a location
+function getBalanceReport(location) {
+  if (!balanceState[location]) return null;
+  const state = balanceState[location];
+  const light = trafficLights[location];
+  if (!light) return null;
+  
+  return {
+    location: location,
+    city: light.city,
+    province: light.province,
+    phase: light.phase,
+    phaseTimer: light.phaseTimer,
+    greenTimeUsed: state.greenTimeUsed,
+    greenCycles: state.greenCycles,
+    waitTime: state.waitTime,
+    balanceWeights: state.balanceWeights,
+    fairness: state.fairness || 1,
     timestamp: new Date().toISOString()
   };
 }
@@ -769,5 +1081,8 @@ module.exports = {
   getDirectionStatus,
   setDirectionStatus,
   resetCityToOriginalState,
-  calculateStats
+  calculateStats,
+  getBalanceReport,
+  balanceState,
+  BALANCE_CONFIG
 };
